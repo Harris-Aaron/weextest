@@ -15,11 +15,10 @@
     <!--引入自定义样式-->
     <link rel="stylesheet" href="styles/wallet.css">
 </head>
-<style>
-    .recharge_income a{
-        background-color: white;
-    }
-</style>
+
+
+
+
 <body>
     <!--顶部-->
     <header>
@@ -36,7 +35,7 @@
         <div class="money">
             <h1 id="totalMoney">--</h1>
             <p>账户余额（元）</p>
-            <p>优惠码兑换清洗大礼包</p>
+            <p onclick="PopoverToggle()">优惠码兑换清洗大礼包</p>
         </div>
         <div class="balance">
             <div class="balance_left">
@@ -60,6 +59,29 @@
             </a>
         </div>
     </section>
+
+
+    <div id="ipnutPayPWD" class="box mui-popover mui-popover-action" style="margin: 35% auto;">
+        <div class="ProverBox">
+            <div class="ProverBoxHeader">
+                <p class="ProverBoxHeaderText">请输入邀请码</p>
+                <img onclick="PopoverToggle()" class="ProverBoxHeaderCancel" src="./images/guanbizhifu.png">
+            </div>
+            <div>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+
     <!--引入MUI JS文件-->
     <script type="text/javascript" src="scripts/mui.min.js"></script>
     <!--引入APP-->
@@ -70,22 +92,27 @@
     <script src="scripts/template-web.js"></script>
     <script>
         $.post(`${ApiMainPath}`, {
-                action: 'user/getMoneybag',
-                formData: ``,
-                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
-                method: 'get'
-            }, function (data, status) { 
-                console.log(data)
-                if (data.code == 200) {
-                   console.log(JSON.parse(localStorage.getItem("YAK_UserData")).token)
-                    $('#totalMoney').html(parseFloat(data.data.money + data.data.frozenMoney).toFixed(2))
-                    $('#money').html(parseFloat(data.data.money).toFixed(2))
-                    $('#frozenMoney').html(parseFloat(data.data.frozenMoney).toFixed(2))
-                } else {
-                    alert(data.message)
-                }
+            action: 'user/getMoneybag',
+            formData: ``,
+            token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+            method: 'get'
+        }, function(data, status) {
+            console.log(data)
+            if (data.code == 200) {
+                console.log(JSON.parse(localStorage.getItem("YAK_UserData")).token)
+                $('#totalMoney').html(parseFloat(data.data.money + data.data.frozenMoney).toFixed(2))
+                $('#money').html(parseFloat(data.data.money).toFixed(2))
+                $('#frozenMoney').html(parseFloat(data.data.frozenMoney).toFixed(2))
+            } else {
+                alert(data.message)
+            }
 
-             })
+        })
+
+
+        let PopoverToggle = () => {
+            mui('#ipnutPayPWD').popover('toggle');
+        }
     </script>
 
 </body>

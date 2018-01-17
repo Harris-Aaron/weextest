@@ -341,11 +341,11 @@
         }
 
         if (localStorage.getItem(opneID)) {
-            alert(`缓存的openID是${localStorage.getItem(opneID)}`)
-                //获取openID 后请求参数 没有获取成功就使用默认登录
-                (async() => {
-                    await openIdToLogin(localStorage.getItem(opneID), 1)
-                })()
+            // alert(`缓存的openID是${localStorage.getItem(opneID)}`)
+            //获取openID 后请求参数 没有获取成功就使用默认登录
+            (async() => {
+                await openIdToLogin(localStorage.getItem(opneID), 1)
+            })()
         }
     </script>
 

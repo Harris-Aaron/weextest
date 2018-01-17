@@ -120,7 +120,7 @@
                     }, function(data, status) {
                         // console.log(data)
                         if (data.code == 200) {
-                            alert('验证码' + JSON.stringify(data));
+                            // alert('验证码' + JSON.stringify(data));
                             mui.toast('验证码已发送');
                         } else {
                             clearInterval(djs)
@@ -135,6 +135,7 @@
 
             }
             $('.gdbtn').click(function() {
+                localStorage.setItem('openID', getUrlParam(openID))
                 if (!$('.vCode').val()) {
                     mui.toast('请输入验证码');
                     return false;
@@ -145,50 +146,13 @@
                     mui.toast('确认密码错误');
                     return false;
                 } else {
-                    // alert(1)
                     let form1 = `loginname=${$('#phoneNumer').val()}&password=${BASE32($('#checkPsd').val())}&code=${$('#smscode').val()}&type=User`;
-                    // alert(form1)
-                    // var _this = $(this);
-                    // mui(_this).button('loading');
-                    //注册
-
-                    // (async(orderID) => {
-                    //     let data = new FormData();
-                    //     data.append("action", 'user/regist');
-                    //     data.append("method", 'POST');
-                    //     data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
-                    //     data.append("jsonData", JSON.stringify({
-                    //         "loginname": $('#phoneNumer').val(),
-                    //         "password": $('#checkPsd').val(),
-                    //         "code": $('#smscode').val(),
-                    //         "type": "User"
-                    //     }));
-                    //     data.append("e", '3');
-
-                    //     let body = await fetch(`${ApiMainPath}`, {
-                    //         method: "POST",
-                    //         body: data
-                    //     })
-                    //     let rusultD = await body.json()
-                    //     if (rusultD.code == 200) {
-                    //         mui(_this).button('reset');
-                    //         mui.toast(rusultD.message);
-                    //         window.location.href = "/WEB/inviteCode.html";
-                    //     } else {
-                    //         mui(_this).button('reset');
-                    //         alert(rusultD.message)
-                    //     }
-                    // })()
-
-
                     $.post(`${ApiMainPath}`, {
                         action: 'user/regist',
                         formData: form1,
-                        // token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
                         method: 'post',
                         e: 3
                     }, function(data, status) {
-                        alert(JSON.stringify(data))
                         if (data.code == 200) {
                             mui(_this).button('reset');
                             mui.toast(data.message);

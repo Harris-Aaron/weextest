@@ -1,23 +1,24 @@
-alert((location.href).indexOf('http://m.yiank.cn/WEB/index.html'))
-if ((location.href).indexOf('http://m.yiank.cn/WEB/index.html') == 0) {
-    localStorage.clear()
-    alert('清除缓存')
-}
-
 let Print = (text) => {
-    console.log(`------------${text}-----------`)
+    return true
+        // alert(`------------${text}-----------`)
 }
 
-const findIP = async() => {
-    return new Promise(r => {
-        let w = window,
-            a = new(w.RTCPeerConnection || w.mozRTCPeerConnection || w.webkitRTCPeerConnection)({ iceServers: [] }),
-            b = () => {};
-        a.createDataChannel("");
-        a.createOffer(c => a.setLocalDescription(c, b, b), b);
-        a.onicecandidate = c => { try { c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r) } catch (e) {} }
-    })
+Print((location.href).indexOf('http://m.yiank.cn/WEB/index.html'))
+if ((location.href).indexOf('http://m.yiank.cn/WEB/index.html') == 0) {
+    // localStorage.clear()
+    Print('清除缓存')
 }
+
+// const findIP = async() => {
+//     return new Promise(r => {
+//         let w = window,
+//             a = new(w.RTCPeerConnection || w.mozRTCPeerConnection || w.webkitRTCPeerConnection)({ iceServers: [] }),
+//             b = () => {};
+//         a.createDataChannel("");
+//         a.createOffer(c => a.setLocalDescription(c, b, b), b);
+//         a.onicecandidate = c => { try { c.candidate.candidate.match(/([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/g).forEach(r) } catch (e) {} }
+//     })
+// }
 
 //设置 API 主要地址
 let ApiMainPath = `http://m.yiank.cn:9000/index/api`;
@@ -25,11 +26,11 @@ let ApiQiniuPath = `http://m.yiank.cn:9000/index/qiniuput`;
 let test1Path = `http://m.yiank.cn:9000/index/getprice`;
 let testPath = `http://m.yiank.cn:9000/index/getsigan`;
 
-let a = findIP().then((data) => {
-    Print(data)
-        // ApiMainPath = `http://${data}:8360/index/api`;
-        // ApiQiniuPath = `http://${data}:8360/index/qiniuput`;
-})
+// let a = findIP().then((data) => {
+//     Print(data)
+//         // ApiMainPath = `http://${data}:8360/index/api`;
+//         // ApiQiniuPath = `http://${data}:8360/index/qiniuput`;
+// })
 
 //订单状态描述
 let state2txt = (stateNum) => {
@@ -71,7 +72,7 @@ let TimeSteamp2Time = (shijianchuo) => {
 
 if (localStorage.getItem('opneID') == null) {
     (async() => {
-        alert('本地没有openID,开始请求');
+        Print('本地没有openID,开始请求');
 
         if (new URL(location.href).searchParams.get('code') != null) {
             let data = new FormData();
@@ -84,14 +85,19 @@ if (localStorage.getItem('opneID') == null) {
             })
             let openIDData = await body.json()
 
-            localStorage.clear()
-            localStorage.setItem("opneID", openIDData.data)
-            await openIdToLogin(openIDData.data, 1);
+            if (openIDData.data == "") {
+                return false
+            } else {
+                localStorage.clear()
+                localStorage.setItem("opneID", openIDData.data)
+                await openIdToLogin(openIDData.data, 1);
+            }
+
         }
     })()
 } else {
     (async() => { await openIdToLogin(localStorage.getItem('opneID'), 0) })()
-    alert('已经有openID,不需要请求' + localStorage.getItem('opneID'))
+    Print('已经有openID,不需要请求' + localStorage.getItem('opneID'))
 }
 
 
@@ -117,7 +123,7 @@ let openIdToLogin = async(openID, isrefresh) => {
         })
         let rusultD = await body.json()
         if (rusultD.data == undefined) {
-            alert("用户不存在，跳转到绑定页面" + `/WEB/wxUserBind.html?openID=${openID}`)
+            Print("用户不存在，跳转到绑定页面" + `/WEB/wxUserBind.html?openID=${openID}`)
             localStorage.setItem("opneID", openID)
             location.href = `/WEB/wxUserBind.html?openID=${openID}`
         } else {
@@ -126,7 +132,7 @@ let openIdToLogin = async(openID, isrefresh) => {
             localStorage.setItem('YAK_UserData', JSON.stringify(rusultD.data));
             Print(' 重置登录时间戳 ')
             localStorage.setItem('YAK_loginTimeStamp', JSON.stringify(Date.now()))
-            alert("用户存在，直接到主页" + JSON.stringify(localStorage.getItem('YAK_UserData')))
+            Print("用户存在，直接到主页" + JSON.stringify(localStorage.getItem('YAK_UserData')))
             return rusultD;
         }
 
@@ -136,7 +142,7 @@ let openIdToLogin = async(openID, isrefresh) => {
 }
 
 function unlockwallet() {
-    alert('关闭了吗？')
+    Print('关闭了吗？')
 }
 
 window.addEventListener('visibilitychange', unlockwallet);

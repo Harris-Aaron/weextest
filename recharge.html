@@ -42,7 +42,7 @@
 
 
                 <% for(var i = 0; i < getActListData.regActList.length; i++){ %>
-                    <div class="test_box">
+                    <div class="test_box" onclick="putPrice(<%=  getActListData.regActList[i].payMoney %>)">
                         <div class="box_left current">
                             <p>充
                                 <%=  getActListData.regActList[i].payMoney %> 元</p>
@@ -62,7 +62,7 @@
             <p class="test_title">普通充值</p>
             <p class="test_describe">充值后进入用户账户，可用于宜安客平台的交易支付</p>
             <p class="recharge_input">
-                <input type="text" id="money" value="1.01" placeholder="请输入充值金额">
+                <input type="text" id="money" value="350" placeholder="请输入充值金额">
             </p>
         </div>
         <!--支付方式-->
@@ -73,7 +73,7 @@
         <!--用户协议及下一步-->
         <div class="recharge_next">
             <p>充值即代表您同意<a href="">《宜安客充值协议》</a></p>
-            <p class="btn" onclick="(async()=>{ await getPayCode(); })()">下一步</p>
+            <p class="btn" onclick="(async()=>{ await getPayCode(); })()">充值</p>
             <!-- <br>
             <br>
             <br>
@@ -118,26 +118,25 @@
                     t = s.getHash("SHA-1", "HEX");
 
                 let wxConfig = {
-                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-                    appId: `wx86231dcd37e49b7a`, // 必填，公众号的唯一标识
-                    timestamp: $("#timestamp").val(), // 必填，生成签名的时间戳
-                    nonceStr: $("#noncestr").val(), // 必填，生成签名的随机串
-                    signature: t, // 必填，签名，见附录1
-                    jsApiList: ['chooseWXPay', 'scanQRCode', 'closeWindow', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-                }
-                alert('需要的配置参数' + JSON.stringify(wxConfig))
+                        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId: `wx86231dcd37e49b7a`, // 必填，公众号的唯一标识
+                        timestamp: $("#timestamp").val(), // 必填，生成签名的时间戳
+                        nonceStr: $("#noncestr").val(), // 必填，生成签名的随机串
+                        signature: t, // 必填，签名，见附录1
+                        jsApiList: ['chooseWXPay', 'scanQRCode', 'closeWindow', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                    }
+                    // alert('需要的配置参数' + JSON.stringify(wxConfig))
                 wx.config(wxConfig);
-            })
-
-            wx.ready(function() {
-                alert('配置正常')
+                wx.ready(function() {
+                    // alert('配置正常')
                     // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
-            });
+                });
 
-            wx.error(function(res) {
-                alert('wx.error' + JSON.stringify(res))
+                wx.error(function(res) {
+                    // alert('wx.error' + JSON.stringify(res))
                     // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
-            });
+                });
+            })
         });
 
         let getActList = async() => {
@@ -162,18 +161,23 @@
                     getActListData: rusultD.data
                 }))
             } else {
-                alert('操作失败')
+                // alert('操作失败')
             }
             console.log(rusultD)
         }
         getActList()
 
 
+        function putPrice(price) {
+            $("#money").val(price)
+        }
+
+
         let getPayCode = async() => {
-            alert('支付函数启动')
+
 
             let getPayCodeUrl = `openid=${ localStorage.getItem("opneID") || getUrlParam('opneID') }&money=${$("#money").val()}&type=WeChat_open`
-            alert('请求支付的参数' + getPayCodeUrl + '  herder的token：' + JSON.parse(localStorage.getItem("YAK_UserData")).token)
+                // alert('请求支付的参数' + getPayCodeUrl + '  herder的token：' + JSON.parse(localStorage.getItem("YAK_UserData")).token)
             $.post(`${ApiMainPath}`, {
                 action: 'pay/getPayCode',
                 formData: getPayCodeUrl,
@@ -182,35 +186,46 @@
                 e: 3
             }, function(data) {
                 let rusultD = data
-                alert("获取到支付数据：" + JSON.stringify(data))
+                    // alert("获取到支付数据：" + JSON.stringify(data))
                 if (rusultD.code == 200) {
 
                     let wxPayData = rusultD.data;
 
+                    //    {
+                    //         "appId": "wx86231dcd37e49b7a",
+                    //         "timeStamp": "1516209772",
+                    //         "signType": "MD5",
+                    //         "package": "prepay_id=wx20180118012252555196354c0004179158",
+                    //         "nonceStr": "0ccc7aa88315444f8106caf1ca09417b",
+                    //         "paySign": "51CCECC5C815EBFFFE50ABB1095CE5E6"
+                    //     }
+
+
                     wx.chooseWXPay({
-                        timestamp: parseInt(wxPayData.timestamp), // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
-                        nonceStr: wxPayData.noncestr, // 支付签名随机串，不长于 32 位
-                        package: 'prepay_id=' + wxPayData.prepayid, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                        timestamp: parseInt(wxPayData.timeStamp), // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                        nonceStr: wxPayData.nonceStr, // 支付签名随机串，不长于 32 位
+                        package: wxPayData.package, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
                         signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
-                        paySign: wxPayData.sign, // 支付签名
+                        paySign: wxPayData.paySign, // 支付签名
                         success: function(res) {
-                            alert('支付成功！' + JSON.stringify(res))
+                            // alert('支付成功！' + JSON.stringify(res))
                             location.href = '/WEB/宜安客app钱包充值成功.html'
                                 // 支付成功后的回调函数
                         },
                         cancel: function(res) {
-                            alert('取消支付！' + JSON.stringify(res))
-                            location.href = '/WEB/宜安客app钱包充值失败.html'
-                                // 支付取消的回调函数
+                            mui.toast('取消了支付,你可继续选择其他价位的活动');
+                            // 支付取消的回调函数
                         },
                         error: function(res) {
-                            alert('支付失败！' + JSON.stringify(res))
+                            // alert('支付失败！' + JSON.stringify(res))
                             location.href = '/WEB/宜安客app钱包充值失败.html'
                                 // 支付失败的回调函数
                         }
                     });
+
+
                 } else {
-                    alert('操作失败')
+                    // alert('操作失败')
                 }
             })
 

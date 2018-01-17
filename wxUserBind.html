@@ -107,8 +107,8 @@
                 }, 1000)
 
                 //发送验证码 ${JSON.parse(localStorage.getItem("YAK_UserData")).loginname}
-                let formData = `type=User&loginname=${$('#phone').val()}&smsType=register`;
-                alert(formData);
+                let formData = `type=User&loginname=${$('#phone').val()}&smsType=bind`;
+                // alert(formData);
 
                 $.post(`${ApiMainPath}`, {
                     action: 'user/getCode',
@@ -152,7 +152,7 @@
                 return false;
             } else {
                 let FromDta = `openID=${getUrlParam('openID')}&code=${$("#SMSCode").val()}&phoneNumber=${$('#phone').val()}`
-                alert(FromDta)
+                    // alert(FromDta)
                 $.post(`${ApiMainPath}`, {
                         action: 'user/wxUserBind',
                         formData: FromDta,
@@ -177,8 +177,9 @@
                             mui.toast(data.message);
                             location.href = `/WEB/index.html?openID=${openID}`
                         } else {
-                            alert(data.message)
-                            location.href = `/WEB/register.html?openID=${openID}`
+                            // alert(data.message)
+                            mui.toast(data.message);
+                            // location.href = `/WEB/register.html?openID=${openID}`
                         }
                     })
 
