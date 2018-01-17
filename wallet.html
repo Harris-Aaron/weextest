@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>钱包</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/wallet.css">
+</head>
+<style>
+    .recharge_income a{
+        background-color: white;
+    }
+</style>
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="index.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>钱包</span>
+        </p>
+    </header>
+    <!--内容-->
+    <section>
+        <!--账户余额-->
+        <div class="money">
+            <h1 id="totalMoney">--</h1>
+            <p>账户余额（元）</p>
+            <p>优惠码兑换清洗大礼包</p>
+        </div>
+        <div class="balance">
+            <div class="balance_left">
+                <p id="money">--</p>
+                <p>普通账户（元）</p>
+            </div>
+            <div class="balance_right">
+                <p id="frozenMoney">--</p>
+                <p>活动账户（元）</p>
+            </div>
+        </div>
+        <!--充值及收支明细-->
+        <div class="recharge_income">
+            <a href="recharge.html">
+                <span>充值</span>
+                <span class="mui-icon mui-icon-arrowright forward"></span>
+            </a>
+            <a href="income.html">
+                <span>收支明细</span>
+                <span class="mui-icon mui-icon-arrowright forward"></span>
+            </a>
+        </div>
+    </section>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <script>
+        $.post(`${ApiMainPath}`, {
+                action: 'user/getMoneybag',
+                formData: ``,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'get'
+            }, function (data, status) { 
+                console.log(data)
+                if (data.code == 200) {
+                   console.log(JSON.parse(localStorage.getItem("YAK_UserData")).token)
+                    $('#totalMoney').html(parseFloat(data.data.money + data.data.frozenMoney).toFixed(2))
+                    $('#money').html(parseFloat(data.data.money).toFixed(2))
+                    $('#frozenMoney').html(parseFloat(data.data.frozenMoney).toFixed(2))
+                } else {
+                    alert(data.message)
+                }
+
+             })
+    </script>
+
+</body>
+
+</html>

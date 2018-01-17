@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>公告</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/note.css">
+</head>
+<style>
+    .time{margin: 10px}
+    .note_text{border-radius: 3px}
+    .note_text .title{padding: 5px 0}
+    .mui-table-view-cell:after{height: 0}
+      .mui-table-view-cell {
+        padding: 0 !important;
+        
+    }
+    section{padding-bottom: 20px}
+    .mui-table-view-cell {
+        padding-right: 0 !important;
+    }
+    
+</style>
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="userMsg.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>公告</span>
+        </p>
+    </header>
+    <!--内容-->
+    <!--下拉刷新容器-->
+    <div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+    
+        <div class="mui-scroll">
+    
+            <!--数据列表-->
+            <ul class="mui-table-view mui-table-view-chevron" style="display: list-item;">
+    
+            </ul>
+        </div>
+    </div>
+
+    
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <script>
+        console.log('type '+getUrlParam('type'))
+        mui.init({
+            pullRefresh: {
+                container: '#pullrefresh',
+                up: {
+                    contentrefresh: '正在加载...',
+                    callback: pullupRefresh
+                }
+            }
+        });
+
+
+
+        let pageNum = 3; //每页数
+        let pageSize = 0//最后一条数据id
+        let msgType = getUrlParam('type');//消息类型
+        /**
+         * 上拉加载具体业务实现
+         */
+        async function pullupRefresh() {
+            let list = []
+            $.post(`${ApiMainPath}`, {
+                action: 'system/queryOperateMSG',
+                formData: `type=${msgType}&app=USER&size=${pageNum}&sid=${pageSize}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'POST'
+            }, function (data, status) {
+                console.log('data 消息',data)
+                if (status != 'success') {
+                    alert('请求失败,立即重新请求')
+                    return null
+                }
+                list = data.data.items
+                console.log(list)
+              
+                mui('#pullrefresh').pullRefresh().endPullupToRefresh((list.length < pageNum)); //参数为true代表没有更多数据了。
+                let table = document.body.querySelector('.mui-table-view');
+                for (let i = 0; i < list.length; i++) {
+                    list[i].createTime = TimeSteamp2Time(list[i].createTime);
+                    let li = document.createElement('li');
+                    li.className = 'mui-table-view-cell';
+                    li.innerHTML = `<section>
+                                        <div class="note_content">
+                                            <p class="time">${list[i].createTime}</p>
+                                            <div class="note_text">
+                                                <p class="title">${list[i].title}</p>
+                                                <p>${list[i].desc}</p>
+                                                <p>${list[i].detail}</p>
+                                            </div>
+                                        </div>
+                                    </section>`;
+                    table.appendChild(li);
+                }
+                pageSize= list[length-1].id
+            })
+
+
+
+        }
+
+        if (mui.os.plus) {
+            mui.plusReady(function () {
+                setTimeout(function () {
+                    mui('#pullrefresh').pullRefresh().pullupLoading();
+                }, 1000);
+
+            });
+        } else {
+            mui.ready(function () {
+                mui('#pullrefresh').pullRefresh().pullupLoading();
+            });
+        }
+        //发布时间判断
+        var minute = 1000 * 60;
+        var hour = minute * 60;
+        var day = hour * 24;
+        var halfamonth = day * 15;
+        var month = day * 30;
+        function getDateDiff(dateTimeStamp) {
+            var now = new Date().getTime();
+            var diffValue = now - dateTimeStamp;
+            var monthC = diffValue / month;
+            var weekC = diffValue / (7 * day);
+            var dayC = diffValue / day;
+            var hourC = diffValue / hour;
+            var minC = diffValue / minute;
+            if (monthC >= 1) {
+                result = parseInt(monthC) + "月前";
+            }
+            else if (weekC >= 1) {
+                result = parseInt(weekC) + "周前";
+            }
+            else if (dayC >= 1) {
+                result = parseInt(dayC) + "天前";
+            }
+            else if (hourC >= 1) {
+                result = parseInt(hourC) + "小时前";
+            }
+            else if (minC >= 1) {
+                result = parseInt(minC) + "分钟前";
+            } else {
+                result = "刚刚";
+            }
+            return result;
+        }
+    </script>
+</body>
+
+</html>

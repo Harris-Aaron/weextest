@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>重置支付密码</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/updatePayPassword.css">
+</head>
+<style>
+    .ProverBoxBodyinput {
+        display: inline-block;
+        margin: 10% auto;
+    }
+    
+    .ProverBoxBodyinput input {
+        width: 45px;
+        height: 45px;
+        outline: none;
+        font-size: 35px;
+        border-radius: unset;
+        margin-left: -6px;
+        text-align: center
+    }
+</style>
+
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+                <a href="userInfo.html" class="mui-icon mui-icon-back"></a>
+            </span>
+            <span>重置支付密码</span>
+        </p>
+    </header>
+    <!--内容-->
+    <div style="text-align:center;margin-top:10%">
+        <div>请输入新的支付密码</div>
+        <div class="ProverBoxBodyinput">
+            <input type="password" autofocus maxlength="1">
+            <input type="password" maxlength="1">
+            <input type="password" maxlength="1">
+            <input type="password" maxlength="1">
+            <input type="password" maxlength="1">
+            <input type="password" maxlength="1">
+        </div>
+    </div>
+
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <script>
+        let vcode = getUrlParam('code'); //验证码
+        /**
+         * 模拟支付宝的密码输入形式
+         */
+        (function(window, document) {
+            let active = 0,
+                inputBtn = document.querySelectorAll('input');
+            for (let i = 0; i < inputBtn.length; i++) {
+                inputBtn[i].addEventListener('click', function() {
+                    inputBtn[active].focus();
+                }, false);
+                inputBtn[i].addEventListener('focus', function() {
+                    this.addEventListener('keyup', listenKeyUp, false);
+                }, false);
+                inputBtn[i].addEventListener('blur', function() {
+                    this.removeEventListener('keyup', listenKeyUp, false);
+                }, false);
+            }
+
+            /**
+             * 监听键盘的敲击事件
+             */
+            function listenKeyUp() {
+                // if (!isNaN(this.value) && this.value.length != 0) {
+                if (this.value && this.value.length != 0) {
+                    if (active < 5) {
+                        active += 1;
+                    } else {
+                        let payPwd = ''
+                        $("input[type=password]").each(function() {
+                            payPwd += $(this).val();
+                        });
+                        if (payPwd.length == 6) {
+                            //提交新的支付密码
+                            checkPsd(payPwd)
+                        }
+
+                    }
+                    inputBtn[active].focus();
+                } else if (this.value.length == 0) {
+                    if (active > 0) {
+                        active -= 1;
+                    }
+                    inputBtn[active].focus();
+                }
+            }
+        })(window, document);
+
+
+        function checkPsd(payPwde) {
+            $.post(`${ApiMainPath}`, {
+                action: 'user/resetPayword',
+                formData: `payword=${payPwde}&codeId=${vcode}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'post'
+            }, function(data, status) {
+                console.log(data)
+                if (data.code == 200) {
+                    mui.toast(data.message);
+                    setTimeout(() => {
+                        window.location.href = "/WEB";
+                    }, 300);
+                } else {
+                    alert(data.message)
+                }
+
+            })
+        }
+    </script>
+</body>
+
+</html>

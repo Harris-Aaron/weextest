@@ -1,0 +1,13 @@
+::-webkit-input-placeholder,::-moz-placeholder{font-size: 14px}
+section{position: relative}
+.phone_number{padding: 3rem 2rem;margin: 0 auto}
+.phone_number input{color: #222;padding: 1.5rem 3rem;font-weight: bold}
+.phone_number .shoujihao,.phone_number .yanzhengma{position: relative}
+.phone_number .shoujihao img,.phone_number .yanzhengma img{position: absolute;width:20px;top:.6rem;left:1rem}
+.phone_number .yanzhengma{width: 100%;display: flex}
+.phone_number .yanzhengma input{}
+.phone_number .yanzhengma button{width: 40%;background-color: #444;color: #fff;position: absolute;right: 0;top: 0;bottom: 16px;border: 0;outline: none;border-radius: 0px 3px 3px 0;}
+.submit_btn{width: 100%;height:3rem;line-height:3rem;margin-top: 2rem;background: linear-gradient(to right, #4bcc84 , #39c49b);color: #fff !important;font-weight: bold !important }
+.bg_img{position: absolute;bottom:0}
+.bg_img img{width: 100%;height: 5rem;}
+.gdbtn{border: none;outline: none;margin-top: .5rem;padding: .8rem;background: linear-gradient(to right, #4bcc84 , #39c49b);color: #fff;border-radius: 0.2rem;text-align: center;font-size: 16px}

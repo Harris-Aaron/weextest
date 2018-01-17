@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户评价</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/ordersDetails.css">
+
+
+    <style type="text/css">
+        .icons {
+            text-align: center;
+            border-radius: 30%
+        }
+        
+        .mui-icon-star {
+            color: #B5B5B5;
+            font-size: 50px;
+        }
+        
+        .mui-icon-star-filled {
+            color: #41c790;
+            font-size: 50px;
+        }
+        
+        .inpit .li>div[name][value] {
+            box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+            float: left;
+            border: 2px solid #CCC;
+            color: #CCC;
+            border-radius: 8px;
+            margin: 0.2em 0.2em 0 0.8em;
+        }
+        
+        p {
+            text-align: center;
+            padding: 0.6em 2em 0.6em 2em !important;
+            font-weight: 400;
+        }
+        
+        .inpit .li>div.ack[name][value] {
+            border: 2px solid #42c88f;
+            position: relative;
+            z-index: 10;
+            color: #42c88f;
+            animation: scales 0.3s
+        }
+        
+        .grayspan {
+            display: inline-block;
+            width: calc(100vw * 0.3);
+            text-align: center;
+            height: 45px;
+            line-height: 35px;
+            border: 2px solid #cccccc;
+            border-radius: 8px;
+            color: #8f8f94;
+            font-size: 15px;
+            padding: 0.1em;
+            margin-bottom: 1em;
+            margin-left: .4em;
+        }
+        
+        .activespan {
+            color: #39c49b;
+            border-color: #39c49b
+        }
+    </style>
+</head>
+
+<body>
+    <!--内容-->
+    <section>
+
+
+
+        <!--订单详情-->
+        <div>
+
+            <ul class="mui-table-view mui-table-view-chevron">
+                <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;border-bottom: 1px solid #dedede;">
+                    <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="./images/headPortrait.jpeg">
+                    <div class="mui-media-body">
+                        李师傅&nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> 4.9 </span>
+
+                        <div>
+                            <br> 2018-01-01 15:43 &nbsp;&nbsp;完成维修
+                        </div>
+                    </div>
+                </li>
+            </ul>
+
+
+            <br>
+            <br>
+            <br>
+            <div style="text-align: center;font-size: 18px;font-weight: 400;">
+                匿名评价师傅
+            </div>
+            <br>
+            <br>
+
+            <div id="commitedStars"></div>
+            <script type="text/html" id="commitedStarsTpl">
+                <div class="icons">
+                    <% for(var i = 0; i < commitedStars; i++){ %>
+                        <img style="max-width: 3em;" src="./images/xuanzhongpingfen.png" alt="">
+                        <% } %>
+                            <% for(var i = 0; i < 5-commitedStars; i++){ %>
+
+                                <img style="max-width: 3em;" src="./images/weixuanzhongpingfen.png" alt="">
+
+                                <% } %>
+                </div>
+            </script>
+
+            <div class="icons" id="icon-star">
+                <i data-index="1" class="mui-icon mui-icon-star"></i>
+                <i data-index="2" class="mui-icon mui-icon-star"></i>
+                <i data-index="3" class="mui-icon mui-icon-star"></i>
+                <i data-index="4" class="mui-icon mui-icon-star"></i>
+                <i data-index="5" class="mui-icon mui-icon-star"></i>
+            </div>
+
+            <br>
+            <br>
+
+
+            <div id="inpitassembly" class="inpit" formname="demonstration">
+
+                <div class="li" radio>
+
+                    <div id="Labels"></div>
+                    <script type="text/html" id="LabelsTpl">
+
+                        <% for(var i = 0; i < Labels.length; i++){ %>
+
+                            <div class="grayspan" data-id="<%= Labels[i].label %>" onclick="checkBoxDiv(this,<%= Labels[i].value %>)">
+
+                                <%= Labels[i].label %>
+
+                            </div>
+
+
+                            <% } %>
+
+                    </script>
+
+
+                    <div id="commitedLabels" style=" text-align: center;"></div>
+                    <script type="text/html" id="commitedLabelsTpl">
+
+                        <% for(var i = 0; i < commitedLabels.length; i++){ %>
+
+                            <div class="grayspan activespan">
+
+                                <%= commitedLabels[i] %>
+
+                            </div>
+                            <% } %>
+
+                    </script>
+
+
+                </div>
+
+
+
+
+                <br>
+                <br>
+                <a style="color:#fff" id="apost" onclick="saveOrderComment()">
+                    <div class="cancel" style="width: 90%;
+                margin: 1em auto;
+                background: linear-gradient(to right, #4bcc84, #39c49b);
+                padding: .8rem;
+                color: #fff;
+                border-radius: .4rem;">
+                        提交
+                    </div>
+                </a>
+
+            </div>
+
+        </div>
+
+        <br>
+        <br>
+
+    </section>
+
+
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <script>
+        function assess() {
+            if (JSON.parse(getUrlParam('comment')) != null) {
+                $('#commitedLabels').html(template('commitedLabelsTpl', {
+                    commitedLabels: (JSON.parse(getUrlParam('comment')).comment).split(',')
+                }))
+
+                $('#icon-star').hide()
+                $('#apost').hide()
+                $('#commitedStars').html(template('commitedStarsTpl', {
+                    commitedStars: JSON.parse(getUrlParam('comment')).star
+                }))
+            } else {
+                $.post(`${ApiMainPath}`, {
+                        action: 'system/queryLabels',
+                        formData: `type=assess_label`,
+                        token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                        method: 'POST'
+                    },
+                    function(data, status) {
+                        Print(`评价标签${JSON.stringify(data)}`)
+                        if (data.code == 200) {
+                            $('#Labels').html(template('LabelsTpl', {
+                                Labels: data.data.items
+                            }))
+                        } else {
+                            alert(data.message)
+                        }
+
+                    })
+            }
+
+
+
+
+
+
+        }
+        assess()
+    </script>
+
+    <script>
+        //评分按钮
+        let stats = 0
+        mui.init();
+        mui('.icons').on('click', 'i', function() {
+            var index = parseInt(this.getAttribute("data-index")); //获取当前元素的索引值
+            var parent = this.parentNode; //获取当前元素的父节点
+            var children = parent.children; //获取父节点下所有子元素
+            if (this.classList.contains("mui-icon-star")) { //判断当前节点列表中是否含有.mui-icon-star元素
+                for (var i = 0; i < index; i++) { //亮星
+                    children[i].classList.remove('mui-icon-star');
+                    children[i].classList.add('mui-icon-star-filled');
+                }
+            } else { //重置已经亮星的元素
+                for (var i = index; i < 5; i++) {
+                    children[i].classList.add('mui-icon-star')
+                    children[i].classList.remove('mui-icon-star-filled')
+                }
+            }
+            stats = index
+            console.log(stats + '星好评')
+        })
+
+
+        let checkBoxDiv = (obj, value) => {
+            $(obj).toggleClass('activespan')
+        }
+
+        //用户对订单进行评价
+        function saveOrderComment() {
+            // 复选框
+            let vals = []
+            $('.activespan').each(function() {
+                vals.push($(this).attr('data-id'))
+            })
+            $.post(`${ApiMainPath}`, {
+                    action: 'order/saveOrderComment',
+                    formData: `orderId=${getUrlParam('orderId')}&star=${stats}&comment=${vals}`,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    Print(`评价标签${JSON.stringify(data)}`)
+                    if (data.code == 200) {
+                        location.href = '/WEB/'
+                    } else {
+                        alert(data.message)
+                    }
+
+                })
+
+        }
+    </script>
+
+
+
+</body>
+
+</html>

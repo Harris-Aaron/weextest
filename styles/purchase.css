@@ -1,0 +1,85 @@
+section {
+    height: auto !important;
+}
+
+.list {
+    background-color: #fff;
+}
+
+.list p {
+    padding: .5rem 1rem
+}
+
+.list ul {
+    display: block;
+}
+
+.list .list_title {
+    display: flex;
+    padding: .5rem 1rem
+}
+
+
+/*小圆点*/
+
+.list .circle {
+    display: block;
+    color: #4bcc83;
+    margin-right: .5rem
+}
+
+.list select {
+    color: #bbb;
+    margin-bottom: 0;
+    padding-left: 1rem
+}
+
+.list input {
+    border: none;
+    margin-bottom: 0;
+    font-size: 1rem;
+    color: #bbb
+}
+
+.list .border_bottom textarea {
+    width: 90%;
+    height: 8rem;
+    background-color: #f4f4f4;
+    color: #999;
+    border: 0.01rem solid #ddd;
+    font-size: 1rem
+}
+
+.list .upload_img {
+    width: 6.5rem !important;
+    height: 6.5rem;
+    margin-left: 0.8rem;
+    border: 1px dashed #ccc;
+}
+
+#files {
+    display: none
+}
+
+
+/*提示文字*/
+
+.purchase_text {
+    padding: 1rem .8rem;
+}
+
+.purchase_text p {
+    color: #222
+}
+
+
+/*下单按钮*/
+
+.purchase_btn p {
+    width: 80%;
+    margin: 0 auto;
+    background: linear-gradient(to right, #4bcc84, #39c49b);
+    padding: .5rem;
+    color: #fff;
+    border-radius: .4rem
+}

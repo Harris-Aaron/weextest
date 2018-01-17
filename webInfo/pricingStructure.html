@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+
+
+
+
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <base href="http://www.yiank.cn/mobile/">
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="stylesheet" type="text/css" href="/static/mobileWeb/css/reset.css" />
+    <link rel="stylesheet" type="text/css" href="/static/mobileWeb/css/transparentPrice.css" />
+    <link rel="stylesheet" type="text/css" href="/static/mobileWeb/css/response.css">
+    <script src="/static/jquery-3.1.1.min.js"></script>
+    <script src="/static/script/function.js"></script>
+    <title>透明价格</title>
+    <style>
+        .layer {
+            width: 100%;
+            height: auto;
+        }
+        
+        .head2 {
+            width: 100%;
+            height: 60px;
+            position: fixed;
+            background-color: white;
+            z-index: 999;
+        }
+        
+        .content {
+            position: relative;
+            top: 60px;
+            z-index: 1;
+        }
+        
+        .head_top2 {
+            text-align: center;
+            line-height: 60px;
+            border-bottom: 1px solid #dfdfdf;
+        }
+        
+        .head2 input {
+            width: 70%;
+            height: 45px;
+            line-height: 60px;
+            border-radius: 20px;
+            border: 0px;
+            background-color: #f0f0f0;
+            font-size: 16px;
+            color: #999999;
+            outline: none;
+            padding-left: 20px;
+        }
+        
+        .button2 {
+            font-size: 16px;
+            color: #4bcc83;
+            margin-left: 10px;
+        }
+        
+        .division {
+            width: 100%;
+            height: 10px;
+            background-color: #f4f4f4;
+        }
+        
+        .pro {
+            width: 100%;
+            height: auto;
+            border-bottom: 3px solid #f4f4f4;
+        }
+        
+        .product {
+            width: 90%;
+            height: auto;
+            margin: 0 auto;
+            line-height: 22px;
+            margin-top: 10px;
+        }
+        
+        .product p {
+            margin-left: 8px;
+            margin-top: 5px;
+            font-size: 14px;
+            color: #333333;
+            padding-bottom: 10px;
+        }
+        
+        .product .price {
+            color: #4bcc83;
+            font-size: 18px;
+            text-align: right;
+            margin-right: 10px;
+        }
+    </style>
+
+
+</head>
+
+<body>
+
+    <div class="maincont">
+        <div id="repair">
+            <div class="head-top">
+                <img class="headImg" src="/static/mobileWeb/img/jiageliebiaobanner.png" />
+                <table class="title">
+                    <tr>
+                        <td align="center">
+                            <div class="title1">维修服务</div>
+                        </td>
+                        <td align="center">
+                            <div class="title2">清洗保养</div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="repair">
+                <div class="repair1">
+                    <form id="postForm" name="postForm" action="/mobile/priceList">
+                        <div class="type">
+                            <div>
+                                <span style="color:#71c989">&bull;</span>&nbsp;系统类型
+                            </div>
+                            <select id="serviceType_sel" name="serviceType">
+                                    <option value="0" disabled selected>选择您查找的配件的系统类型</option>
+                                    <option value="17">中央空调</option>
+                                    <option value="19">采暖</option>
+                                    <option value="20">净水</option>
+                                    <option value="21">油烟机</option>
+                                    <option value="22">冰箱</option>
+                                    <option value="23">热水器</option>
+                                    <option value="24">洗衣机</option>
+                                    <option value="39">柜/挂空调</option>
+                                    <option value="47">新风</option>
+                                </select>
+                        </div>
+                        <div class="type">
+                            <div>
+                                <span style="color:#71c989">&bull;</span>&nbsp;品牌
+                            </div>
+                            <select id="brands_sel" name="brands">
+                                    <option value="0" disabled selected>选择您查找的配件的品牌</option>
+                                </select>
+                        </div>
+                        <div class="type">
+                            <div>
+                                <span style="color:#71c989">&bull;</span>&nbsp;关键词
+                            </div>
+                            <input id="keywords" type="text" name="keywords" placeholder="输入您查找的配件的关键词" />
+                        </div>
+                        <div class="search">
+                            <div style="height:24px;"></div>
+                            <div class="button">去查询</div>
+                        </div>
+                    </form>
+                    <div class="footer" style="font-size:13px;line-height:18px;width:92%;margin:0 auto;margin-top:10px;padding-bottom:17px;">
+                        以上配件价格为宜安客APP维修业务中相关配件收费标准价格。用户可通过搜索关键词进行价格查询，如出现维修售后师傅报价与该价格列表价格不符时，可拨打4001816100进行咨询。
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="layer" style="display:none">
+            <div class="head2">
+                <div class="head_top2">
+                    <form action="" id="queryForm" name="queryForm">
+                        <input id="keywords2" type="text" value="" name="keywords" placeholder="请输入关键词" />
+                        <span class="button2">查询</span>
+                    </form>
+                </div>
+            </div>
+            <div class="content">
+                <div class="division"></div>
+                <div id="productList" class="productList">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        var serviceType = 1;
+        $(function() {
+            $(".button").click(function() {
+                queryPriceList($("#brands_sel").val(), $("#serviceType_sel").val(), $("#keywords").val());
+                setTimeout(function() {
+                    $("#keywords2").val($("#keywords").val());
+                    $("#repair").hide();
+                    $("#layer").show();
+                }, 100)
+            });
+            $(".button2").click(function() {
+                queryPriceList($("#brands_sel").val(), $("#serviceType_sel").val(), $("#keywords2").val());
+            });
+
+            $(".title2").click(function() {
+                changePid(2, function(re) {
+                    updateTypeSelect(re.servicesType);
+                    $(".title2").css({
+                        "border-bottom": "2px solid #4bcc83",
+                        "color": "#4bcc83"
+                    });
+                    $(".title1").css({
+                        "border-bottom": "0",
+                        "color": "#757575"
+                    });
+                })
+            });
+            $(".title1").click(function() {
+                changePid(1, function(re) {
+                    updateTypeSelect(re.servicesType);
+                    $(".title1").css({
+                        "border-bottom": "2px solid #4bcc83",
+                        "color": "#4bcc83"
+                    });
+                    $(".title2").css({
+                        "border-bottom": "0",
+                        "color": "#757575"
+                    });
+                });
+            });
+            $("#serviceType_sel").change(function() {
+                changeService($(this).val())
+            });
+        });
+
+        function changePid(pid, fun) {
+            if (serviceType != pid) {
+                $.extendPostJson("/mobile/queryServiceType", {
+                    "pid": pid
+                }, fun);
+                serviceType = pid;
+            }
+        }
+
+        function changeService(typeId) {
+            $.extendPostJson("/mobile/queryBrand", {
+                "serviceTypeId": typeId
+            }, function(re) {
+                updateBrandsSelect(re.brands)
+            });
+        }
+
+        function updateTypeSelect(data) {
+            $("#serviceType_sel").empty();
+            $("#brands_sel").empty();
+            $("#serviceType_sel").append(" <
+                option value = \"0\" disabled selected>选择您查找的配件的系统类型</option>");
+            $("#brands_sel").append(" <
+                option value = \"0\" disabled selected>选择您查找的配件的品牌</option>");
+            $.each(data, function(index, content) {
+                    $("#serviceType_sel").append(" <
+                        option value = '"+content.serviceTypeId+"' > "+content.serviceTypeName+" < /option>"); 
+                    }
+                );
+            }
+
+            function updateBrandsSelect(data) {
+                $("#brands_sel").empty();
+                $("#brands_sel").append(" <
+                    option value = \"0\" disabled selected>选择您查找的配件的品牌</option>");
+                $.each(data, function(index, content) {
+                        $("#brands_sel").append(" <
+                            option value = '"+content.id+"' > "+content.brandName+" < /option>"); 
+                        }
+                    );
+                }
+
+                function queryPriceList(brandId, serviceTypeId, keywords) {
+                    $("#productList").empty();
+                    $.extendPostJson("/mobile/queryPriceList", {
+                            "brandId": brandId,
+                            "serviceTypeId": serviceTypeId,
+                            "keywords": keywords
+                        }, function(re) {
+                            $.each(re.accessories, function(index, content) {
+                                    $("#productList").append(" <
+                                        div class = 'pro' >
+                                        <
+                                        div class = 'product' >
+                                        <
+                                        p > "+content.accessoriesName+" < /p> <
+                                        p class = 'price' > ￥"+content.sellPrice+" < /p> < /
+                                        div > <
+                                        /div>");
+                                    });
+                            });
+                    }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>充值</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/recharge.css">
+</head>
+
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="index.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>充值</span>
+        </p>
+    </header>
+    <!--内容-->
+    <section>
+        <div id="getActListData"></div>
+        <script id="getActListDataTpl" type="text/html">
+
+            <!--测试活动充值-->
+            <div class="recharge_test">
+                <p class="test_title">
+                    <%= getActListData.title %>
+                </p>
+                <p class="test_describe">
+                    <%= getActListData.describe %>
+                </p>
+
+
+                <% for(var i = 0; i < getActListData.regActList.length; i++){ %>
+                    <div class="test_box">
+                        <div class="box_left current">
+                            <p>充
+                                <%=  getActListData.regActList[i].payMoney %> 元</p>
+                            <p>得
+                                <%=  getActListData.regActList[i].giveMoney %>元</p>
+                        </div>
+
+                    </div>
+                    <% } %>
+
+
+            </div>
+
+        </script>
+        <!--普通充值-->
+        <div class="recharge_common">
+            <p class="test_title">普通充值</p>
+            <p class="test_describe">充值后进入用户账户，可用于宜安客平台的交易支付</p>
+            <p class="recharge_input">
+                <input type="text" id="money" value="1.01" placeholder="请输入充值金额">
+            </p>
+        </div>
+        <!--支付方式-->
+        <div class=recharge_pay>
+            <p class="pay_text">选择支付方式</p>
+            <p class="pay_wechat"><img src="./images/weixinzhifu.png" style=" width: 2.5em;margin-right: 1em;">微信支付</p>
+        </div>
+        <!--用户协议及下一步-->
+        <div class="recharge_next">
+            <p>充值即代表您同意<a href="">《宜安客充值协议》</a></p>
+            <p class="btn" onclick="(async()=>{ await getPayCode(); })()">下一步</p>
+            <!-- <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <br>
+            <p class="btn" onclick="wx_share('分享标题', `https://github.com/yuzu-emu/yuzu?utm_source=gold_browser_extension`, `https://avatars1.githubusercontent.com/u/35075882?v=4`, '分享描述');">下一步</p>
+       -->
+        </div>
+
+    </section>
+
+
+    <form id="jsapiSignForm">
+        <input type="hidden" name="jsapi_ticket" id="jsapi_ticket" placeholder="通过 getticket 接口获取的 JSAPI 调用凭证" maxlength="86" required>
+        <input type="hidden" name="noncestr" id="noncestr" placeholder="随机生成的字符串" required>
+        <input type="hidden" name="timestamp" id="timestamp" placeholder="当前时间戳（单位：秒）" maxlength="10" required>
+        <input type="hidden" name="url" id="url" placeholder="需要调用 JS 接口的 URL" required>
+    </form>
+
+    <!--引入JSAPI-->
+    <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/Base128.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $.post(`${test1Path}`, function(data) {
+                $("#jsapi_ticket").val(data.data.jsapi_ticket)
+                $("#noncestr").val(Math.random().toString(36).substr(2, 15))
+                $("#timestamp").val(Math.floor((Date.now() / 1000)))
+                $("#url").val((window.location.href).split("#")[0])
+                let e = decodeURIComponent($("#jsapiSignForm").serialize()).split("#")[0],
+                    s = new jsSHA(e, "TEXT"),
+                    t = s.getHash("SHA-1", "HEX");
+
+                let wxConfig = {
+                    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                    appId: `wx86231dcd37e49b7a`, // 必填，公众号的唯一标识
+                    timestamp: $("#timestamp").val(), // 必填，生成签名的时间戳
+                    nonceStr: $("#noncestr").val(), // 必填，生成签名的随机串
+                    signature: t, // 必填，签名，见附录1
+                    jsApiList: ['chooseWXPay', 'scanQRCode', 'closeWindow', 'onMenuShareTimeline', 'onMenuShareAppMessage', 'onMenuShareQQ', 'onMenuShareQZone'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+                }
+                alert('需要的配置参数' + JSON.stringify(wxConfig))
+                wx.config(wxConfig);
+            })
+
+            wx.ready(function() {
+                alert('配置正常')
+                    // config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后，config是一个客户端的异步操作，所以如果需要在页面加载时就调用相关接口，则须把相关接口放在ready函数中调用来确保正确执行。对于用户触发时才调用的接口，则可以直接调用，不需要放在ready函数中。
+            });
+
+            wx.error(function(res) {
+                alert('wx.error' + JSON.stringify(res))
+                    // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+            });
+        });
+
+        let getActList = async() => {
+            let data = new FormData();
+            data.append("action", 'act/getActList');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "type": "reg",
+                "app": "USER"
+            }));
+            // data.append("e", '0');
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+
+            if (rusultD.code == 200) {
+                $('#getActListData').html(template('getActListDataTpl', {
+                    getActListData: rusultD.data
+                }))
+            } else {
+                alert('操作失败')
+            }
+            console.log(rusultD)
+        }
+        getActList()
+
+
+        let getPayCode = async() => {
+            alert('支付函数启动')
+
+            let getPayCodeUrl = `openid=${ localStorage.getItem("opneID") || getUrlParam('opneID') }&money=${$("#money").val()}&type=WeChat_open`
+            alert('请求支付的参数' + getPayCodeUrl + '  herder的token：' + JSON.parse(localStorage.getItem("YAK_UserData")).token)
+            $.post(`${ApiMainPath}`, {
+                action: 'pay/getPayCode',
+                formData: getPayCodeUrl,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'post',
+                e: 3
+            }, function(data) {
+                let rusultD = data
+                alert("获取到支付数据：" + JSON.stringify(data))
+                if (rusultD.code == 200) {
+
+                    let wxPayData = rusultD.data;
+
+                    wx.chooseWXPay({
+                        timestamp: parseInt(wxPayData.timestamp), // 支付签名时间戳，注意微信jssdk中的所有使用timestamp字段均为小写。但最新版的支付后台生成签名使用的timeStamp字段名需大写其中的S字符
+                        nonceStr: wxPayData.noncestr, // 支付签名随机串，不长于 32 位
+                        package: 'prepay_id=' + wxPayData.prepayid, // 统一支付接口返回的prepay_id参数值，提交格式如：prepay_id=\*\*\*）
+                        signType: 'MD5', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
+                        paySign: wxPayData.sign, // 支付签名
+                        success: function(res) {
+                            alert('支付成功！' + JSON.stringify(res))
+                            location.href = '/WEB/宜安客app钱包充值成功.html'
+                                // 支付成功后的回调函数
+                        },
+                        cancel: function(res) {
+                            alert('取消支付！' + JSON.stringify(res))
+                            location.href = '/WEB/宜安客app钱包充值失败.html'
+                                // 支付取消的回调函数
+                        },
+                        error: function(res) {
+                            alert('支付失败！' + JSON.stringify(res))
+                            location.href = '/WEB/宜安客app钱包充值失败.html'
+                                // 支付失败的回调函数
+                        }
+                    });
+                } else {
+                    alert('操作失败')
+                }
+            })
+
+
+
+
+        }
+
+        function wx_share(title, link, imgurl, desc) {
+            //朋友圈
+            wx.onMenuShareTimeline({
+                title: title, // 分享标题
+                link: link, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+            //微信好友
+            wx.onMenuShareAppMessage({
+                title: title, // 分享标题
+                desc: desc, // 分享描述
+                link: link, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                type: 'link', // 分享类型,music、video或link，不填默认为link
+                dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+
+            //qq
+            wx.onMenuShareQQ({
+                title: title, // 分享标题
+                desc: desc, // 分享描述
+                link: link, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+            // qq空间
+            wx.onMenuShareQZone({
+                title: title, // 分享标题
+                desc: desc, // 分享描述
+                link: link, // 分享链接
+                imgUrl: imgurl, // 分享图标
+                success: function() {
+                    // 用户确认分享后执行的回调函数
+                },
+                cancel: function() {
+                    // 用户取消分享后执行的回调函数
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>

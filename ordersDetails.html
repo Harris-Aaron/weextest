@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>订单详情</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/ordersDetails.css">
+</head>
+
+<body>
+    <!--顶部-->
+    <!-- <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="orders.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>订单详情</span>
+        </p>
+    </header> -->
+    <!--内容-->
+    <section>
+        <div id="getOrderInfo"></div>
+        <script type="text/html" id='getOrderInfoTpl'>
+            <!--订单状态-->
+            <div class="ordersDetails_title">
+                <p class="title18">
+                    <%= state2txtArt(getOrderInfo.status)[0] %>
+                </p>
+                <p class="orders_number">
+                    <span>订单号：<%= getOrderInfo.orderId %></span>
+
+                    <a href="tel:+4001816100" style="color:#fff"><span class="contact">联系客服</span></a>
+                </p>
+            </div>
+
+            <% if (getOrderInfo.worker) { %>
+
+                <ul class="mui-table-view mui-table-view-chevron" style="margin-top: 0.8em;">
+                    <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;border-bottom: 1px solid #dedede;">
+                        <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= getOrderInfo.worker.header %>">
+                        <div class="mui-media-body">
+                            <%= getOrderInfo.worker.nickName %>
+                                &nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> 4.9 </span>
+                                <div style="color: #717171;font-weight: 400;">
+                                    <br>接单时间：
+                                    <%= dateFormat(getOrderInfo.dutyTime) %>
+                                </div>
+                        </div>
+                    </li>
+                </ul>
+                <% } %>
+
+                    <!--订单详情-->
+                    <div class="ordersDetails_content">
+                        <p class="content_title">
+                            <span class="category">下单信息</span>
+                        </p>
+                        <p>
+                            <span class="category">服务类型</span>
+                            <span class="category_text"><%= getOrderInfo.serverType %></span>
+                        </p>
+                        <p>
+                            <span class="category">品&emsp;&emsp;牌</span>
+                            <span class="category_text"><%= getOrderInfo.brand %></span>
+                        </p>
+
+
+                        <% if (getOrderInfo.category) { %>
+
+                            <p>
+                                <span class="category">系统类型</span>
+                                <span class="category_text"><%= getOrderInfo.category %></span>
+                            </p>
+
+                            <% } %>
+
+
+                                <p>
+                                    <span class="category">维修地址</span>
+                                    <span class="category_text"><%= getOrderInfo.address %></span>
+                                </p>
+                                <p>
+                                    <span class="category">预约时间</span>
+                                    <span class="category_text"><%= dateFormat(getOrderInfo.dutyTime) %></span>
+                                </p>
+
+
+                                <% if (getOrderInfo.description) { %>
+
+                                    <p>
+                                        <span class="category">故障描述</span>
+                                        <span class="category_text"><%= getOrderInfo.description %></span>
+                                    </p>
+
+                                    <% } %>
+
+
+                                        <% if (getOrderInfo.userImg) { %>
+
+                                            <p>
+                                                <span class="category">上传图片</span>
+
+                                                <span class="category_text">
+
+                                        <% for(var i = 0; i < getOrderInfo.userImg.length; i++){ %>
+                                        <span class="orderDelailPic" style="background-image:url(<%= getOrderInfo.userImg[i] %>);"  onclick="showPic('<%= getOrderInfo.userImg[i] %>')"></span>
+                                                <% } %>
+
+                                                    </span>
+                                            </p>
+
+
+
+                                            <% } %>
+
+
+                                                <p>
+                                                    <span class="category">下单时间</span>
+                                                    <span><%= dateFormat(getOrderInfo.dutyTime) %> </span>
+                                                </p>
+
+
+
+
+
+
+                    </div>
+                    <br>
+                    <% if (getOrderInfo.status == 3 || getOrderInfo.status == 4 || getOrderInfo.status == 5 || getOrderInfo.status == 6) { %>
+                        <a href="./用户评价.html?comment=<%= getOrderInfo.comment %>" style="margin: 0;padding: 0;float: left;margin-top: 2.9em;margin-left: 1em;font-size: 15px;">评价</a>
+                        <% } %>
+                            <!--操作按钮-->
+                            <div class="cancel">
+
+                                <% if (getOrderInfo.status == 0 || getOrderInfo.status == 1 ) { %>
+                                    <span class="color_black clickBut" onclick="(async()=>{ await cancelOrder('<%= getOrderInfo.orderId %>'); })()">取消订单</span>
+                                    <% } %>
+
+                                        <% if (getOrderInfo.status == 2 ) { %>
+
+                                            <a href="./未到场.html?orderId=<%= getOrderInfo.orderId %>"><span class="color_black clickBut">未到场？</span></a>
+                                            <% } %>
+
+                                                <% if (getOrderInfo.status == 1 || getOrderInfo.status == 2 ) { %>
+                                                    <a href="tel:<%= getOrderInfo.worker.mobile %>" style="color:#fff"> <span class="color_black clickBut">联系师傅</span> </a>
+                                                    <% } %>
+
+                                                        <% if (getOrderInfo.status == 3 || getOrderInfo.status == 4 || getOrderInfo.status == 5 || getOrderInfo.status == 6) { %>
+                                                            <% if (getOrderInfo.status == 4 ) { %>
+                                                                <a href="./报价单.html?orderId=<%= getOrderInfo.orderId %>&status=<%= getOrderInfo.status %>"><span class="color_black clickBut">查看报价</span></a>
+                                                                <% }else{ %>
+                                                                    <a href="./报价单.html?orderId=<%= getOrderInfo.orderId %>"><span class="color_black clickBut">查看报价</span></a>
+                                                                    <% } %>
+                                                                        <% } %>
+
+                                                                            <% if (getOrderInfo.status == 5) { %>
+                                                                                <span class="color_black clickBut" onclick="(async()=>{ await comfirmFinish('<%= getOrderInfo.orderId %>'); })()">确认完成</span>
+                                                                                <% } %>
+
+                                                                                    <% if (getOrderInfo.status == 6) { %>
+                                                                                        <a href="tel:<%= getOrderInfo.worker.mobile %>" style="color:#fff"><span class="color_black clickBut">售后服务</span></a>
+
+                                                                                        <% } %>
+
+
+                            </div>
+
+
+
+        </script>
+        <br>
+        <br>
+        <br>
+        <br>
+    </section>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <script>
+        let showPic = (id) => {
+            open(`./previewPic.html?picUrl=${id}`)
+        }
+
+        let cancelOrder = async(orderID) => {
+            let data = new FormData();
+            data.append("action", 'order/cancelOrder');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "orderId": orderID
+            }));
+            // data.append("e", '0');
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+            if (rusultD.code == 200) {
+                alert(rusultD.message)
+                location.href = '/WEB'
+            } else {
+                alert('操作失败')
+            }
+            console.log(rusultD)
+        }
+
+        let comfirmFinish = async(orderID) => {
+            let data = new FormData();
+            data.append("action", 'order/confirmFinish');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "orderId": orderID
+            }));
+            // data.append("e", '0');
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+            if (rusultD.code == 200) {
+                alert(rusultD.message)
+                location.href = `/WEB/用户评价.html?orderId=${getUrlParam('orderId')}`
+            } else {
+                alert('操作失败')
+            }
+            console.log(rusultD)
+        }
+
+        if (getUrlParam('orderId')) {
+
+
+            let getOrderInfo
+
+            $.post(`${ApiMainPath}`, {
+                action: 'order/getOrderInfo',
+                formData: `orderId=${getUrlParam('orderId')}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'POST'
+            }, function(data, status) {
+                getOrderInfo = data.data
+
+                getOrderInfo.userImg = (getOrderInfo.userImg).split(",")
+
+                console.log(getOrderInfo)
+
+                template.defaults.imports.dateFormat = function(date) {
+                    return TimeSteamp2Time(date)
+                };
+
+                template.defaults.imports.state2txtArt = function(state) {
+                    return state2txt(state)
+                };
+
+                $('#getOrderInfo').html(template('getOrderInfoTpl', {
+                    getOrderInfo: getOrderInfo
+                }))
+            });
+
+
+        } else {
+            console.log('未获取订单号')
+        }
+    </script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>首页</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/index.css">
+    <style>
+        .amap-copyright {
+            opacity: 0 !important;
+        }
+        
+        .spanTag {
+            border: 1px solid #63d394;
+            padding: 1px 4px;
+            border-radius: 5px;
+            color: #63d394;
+            font-weight: 100;
+            font-size: 13px;
+            display: inline-block;
+            margin-bottom: 3px;
+        }
+    </style>
+
+</head>
+
+<body>
+    <!--顶部-->
+    <header style="display:block">
+        <div id="head" class="mui-bar mui-bar-nav">
+            <span id="user">
+                    <img src="images/geren.png" class="headerIcon">
+            </span>
+            <h1 class="mui-title headerTitle">宜安客</h1>
+            <a href="userMsg.html">
+                <span>
+                        <img src="images/xiaoxi.png" class="headerIcon">
+                </span>
+            </a>
+        </div>
+        <!--导航-->
+        <nav>
+            <ul class="nav_menu">
+                <li onclick="changServiceType('maintenance')" class="current">维修服务</li>
+                <li onclick="changServiceType('clean')">保养清洗</li>
+            </ul>
+        </nav>
+        <div id="worksList"></div>
+        <script type="text/html" id='workerTpl'>
+
+            <% for(var i = 0; i < worksList.length; i++){ %>
+                <ul class="mui-table-view mui-table-view-chevron">
+                    <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                        <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= worksList[i].header %>">
+                        <div class="mui-media-body">
+                            <%= worksList[i].realName %>&nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= worksList[i].star %> </span>
+                                <a href="purchase.html?workerID=<%= worksList[i].userId %>" style="float:right; color: #63d394; font-weight: 200;">  找他下单  </a>
+                                <p style="margin-top:0.5em">
+                                    <% for(var j = 0; j < worksList[i].skillList.length; j++){ %> <span class="spanTag"><%= worksList[i].skillList[j] %></span>
+                                        <% } %>
+                                </p>
+                        </div>
+                    </li>
+                </ul>
+                <% } %>
+        </script>
+
+    </header>
+
+    <!--侧栏菜单-->
+    <div id="warp"></div>
+    <div id="slider_menu">
+        <div id="UserInfo"></div>
+        <script type="text/html" id='UserInfoTpl'>
+            <!--用户头像-->
+            <ul class="userImg">
+                <li class="userImg_a">
+                    <a href="userInfo.html">
+                        <img src="<%= UserInfo.headPortrait %>" alt="" style="border-radius: 50%;">
+                    </a>
+                </li>
+                <li style="font-weight: bold">
+                    <%= UserInfo.nickname %>
+                </li>
+            </ul>
+        </script>
+
+        <!--管理中心-->
+        <ul class="manage">
+            <a href="userInfo.html">
+                <li>
+                    <span class="manageImg">
+                <img src="images/gerenxinxi.png" alt="">
+            </span>
+                    <span>个人</span>
+                </li>
+            </a>
+            <a href="./orderList.html">
+                <li>
+                    <span class="manageImg">
+                <img src="images/dingdan.png" alt="">
+            </span>
+                    <span>订单</span>
+                </li>
+            </a>
+            <a href="wallet.html">
+                <li>
+                    <span class="manageImg">
+                <img src="images/qianbao.png" alt="">
+            </span>
+                    <span>钱包</span>
+                </li>
+            </a>
+            <a href="setting.html">
+                <li>
+                    <span class="manageImg">
+                <img src="images/shezhi.png" alt="">
+            </span>
+                    <span>设置</span>
+                </li>
+            </a>
+        </ul>
+        <!--三大服务-->
+        <ul class="three_service">
+            <a href="./webInfo/serviceStandard.html">
+                <li>
+                    <p><img src="images/fuwubiaozhun.png" alt=""></p>
+                    <p>服务标准</p>
+                </li>
+            </a>
+            <a href="./webInfo/serviceMaintenance.html">
+                <li>
+                    <p><img src="images/fuwubaozhang.png" alt=""></p>
+                    <p>服务保障</p>
+                </li>
+            </a>
+            <a href="./webInfo/pricingStructure.html">
+                <li>
+                    <p><img src="images/jiagetixi.png" alt=""></p>
+                    <p>价格体系</p>
+                </li>
+            </a>
+
+        </ul>
+        <!--招募-->
+        <p class="zhaomu">
+            <a href="./webInfo/saleIn.html">招募售后师傅中，快来加入我们吧</a>
+        </p>
+    </div>
+    <!--map板块-->
+
+    <div id="container" style="width:100%; height:100%;"></div>
+
+    <div id="orderStatus"></div>
+    <script type="text/html" id="orderStatusTpl">
+        <!--页脚：固定搜索框-->
+        <footer>
+            <div class="flex_search">
+                <p class="address" style="height: 50px;padding: 0.8rem 0 0;">
+                    <span><img src="images/dizhi.png" style="max-width:1.4rem;margin:0 5px"></span>
+                    <span id="locat" style="overflow:hidden; text-overflow: ellipsis; white-space:nowrap;"> 正在获取位置信息... </span>
+                </p>
+                <p class="order" style="margin:-5px 0px 0px 0px;">
+                    <a href="purchase.html">我要下单</a>
+                </p>
+            </div>
+        </footer>
+    </script>
+
+    <div id="orderStatus2"></div>
+    <script type="text/html" id="orderStatus2Tpl">
+        <span id="locat" style="display:none;"></span>
+        <!--页脚：固定搜索框-->
+
+        <% if (orderStatus2.data.status == 0) { %>
+            <footer style="height: 3em;margin-top: -4.5rem;">
+                <div class="mui-content" style="background-color:#fff">
+                    <div class="mui-row">
+                        <div class="mui-col-sm-9" style="line-height: 3em;margin: 0 4em 0 6em;color: #63d394;">
+                            努力寻找师傅中
+                            <div class="mui-col-sm-3" onclick="cancelOrderCom(<%= toString(orderStatus2.data.orderId) %>,'你是否要取消此次下单？')" style="line-height: 3em;color:#ccc;display: unset;  margin-left: 2em; "> 取消
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </footer>
+            <% } %>
+
+                <% if (orderStatus2.data.status == 1) { %>
+
+                    <footer style="height: 3em;margin-top: -6.5rem;">
+
+                        <ul class="mui-table-view mui-table-view-chevron">
+                            <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                                <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= orderStatus2.data.worker.header %>">
+                                <div class="mui-media-body" style="margin-top:0.2em">
+                                    <%= orderStatus2.data.worker.nickName %>&nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= orderStatus2.data.worker.star %> </span>
+                                        <a onclick="cancelOrderCom(<%= toString(orderStatus2.data.orderId) %>,'已有师傅接单，您是否取消此次下单？')" style="float:right; color: #ccc; font-weight: 200;">  取消  </a>
+                                        <p style="margin-top:1em;font-size:14px;">
+                                            我们按约定时间上门，竭诚为您服务
+                                        </p>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </footer>
+
+                    <% } %>
+
+                        <% if (orderStatus2.data.status == 2) { %>
+                            <footer style="height: 3em;margin-top: -6.5rem;">
+
+                                <ul class="mui-table-view mui-table-view-chevron">
+                                    <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                                        <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= orderStatus2.data.worker.header %>">
+                                        <div class="mui-media-body" style="margin-top:0.2em">
+                                            <%= orderStatus2.data.worker.nickName %> &nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= orderStatus2.data.worker.star %></span>
+                                                <a href="./未到场.html?orderId=<%= orderStatus2.data.orderId %>"><span class="color_black clickBut" style="float:right; color: #ccc; font-weight: 200;" >未到场？</span></a>
+                                                <p style="margin-top:1em;font-size:14px;">
+                                                    师傅已到场 &nbsp; <span style="color:#63d394;"> 等待报价 </span>
+                                                </p>
+                                        </div>
+                                    </li>
+                                </ul>
+
+                            </footer>
+                            <% } %>
+
+                                <% if (orderStatus2.data.status == 3) { %>
+                                    <footer style="height: 3em;margin-top: -6.5rem;">
+
+                                        <ul class="mui-table-view mui-table-view-chevron">
+                                            <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                                                <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= orderStatus2.data.worker.header %>">
+                                                <div class="mui-media-body" style="margin-top:0.2em">
+                                                    <%= orderStatus2.data.worker.nickName %> &nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= orderStatus2.data.worker.star %></span>
+                                                        <p style="margin-top:1em;font-size:14px;">
+                                                            师傅已到场 &nbsp;
+                                                            <a href="./报价单.html?orderId=<%= orderStatus2.data.orderId %>"><span style="color:#63d394;">查看报价</span></a>
+                                                        </p>
+                                                </div>
+                                            </li>
+                                        </ul>
+
+                                    </footer>
+                                    <% } %>
+
+                                        <% if (orderStatus2.data.status == 4) { %>
+
+                                            <footer style="height: 3em;margin-top: -6.5rem;">
+
+                                                <ul class="mui-table-view mui-table-view-chevron">
+                                                    <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                                                        <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= orderStatus2.data.worker.header %>">
+                                                        <div class="mui-media-body" style="margin-top:0.2em">
+                                                            <%= orderStatus2.data.worker.nickName %> &nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= orderStatus2.data.worker.star %></span>
+                                                                <p style="margin-top:1em;font-size:14px;">
+                                                                    <span style="color:#63d394;"> 师傅正在维修中... </span>
+                                                                </p>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+
+                                            </footer>
+                                            <% } %>
+
+                                                <% if (orderStatus2.data.status == 5) { %>
+                                                    <footer style="height: 3em;margin-top: -6.5rem;">
+
+                                                        <ul class="mui-table-view mui-table-view-chevron">
+                                                            <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                                                                <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= orderStatus2.data.worker.header %>">
+                                                                <div class="mui-media-body" style="margin-top:0.2em">
+                                                                    <%= orderStatus2.data.worker.nickName %> &nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= orderStatus2.data.worker.star %></span>
+                                                                        <p style="margin-top:1em;font-size:14px;">
+                                                                            师傅维修完成 &nbsp;&nbsp; <span style="color:#63d394;" onclick="comfirmFinishCom(<%= toString(orderStatus2.data.orderId) %>,'师傅已完成维修，请点击确认')"> 请确认 </span>
+                                                                        </p>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+
+                                                    </footer>
+                                                    <% } %>
+
+    </script>
+
+
+
+
+
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!-- 高德地图 -->
+    <script type="text/javascript" src='//webapi.amap.com/maps?v=1.4.2&key=0f5bd77ebaca01c873350b31a599c465&plugin=AMap.ToolBar'></script>
+    <!-- UI组件库 1.0 -->
+    <script src="//webapi.amap.com/ui/1.0/main.js?v=1.0.11"></script>
+
+
+    <script>
+        //默认工人类型
+        if (!localStorage.getItem("YAK_RepairmanType")) {
+            localStorage.setItem("YAK_RepairmanType", 'clean');
+        }
+
+        $('#UserInfo').html(template('UserInfoTpl', {
+            UserInfo: JSON.parse(localStorage.getItem('YAK_UserData'))
+        }))
+
+        window.onload = function() {
+            //打开侧滑菜单
+            document.querySelector("#user").addEventListener("click", function() {
+                document.querySelector("#warp").className = "warpShow";
+                document.querySelector("#slider_menu").className = "slider_menuShow";
+            });
+            document.querySelector("#warp").addEventListener("click", function() {
+                document.querySelector("#warp").className = "";
+                document.querySelector("#slider_menu").className = "";
+            })
+
+            //选择卡样式
+            $(".nav_menu li").on("click", function() {
+                $(this).addClass("current").siblings().removeClass("current")
+            })
+
+        }
+
+        if (localStorage.getItem(opneID)) {
+            alert(`缓存的openID是${localStorage.getItem(opneID)}`)
+                //获取openID 后请求参数 没有获取成功就使用默认登录
+                (async() => {
+                    await openIdToLogin(localStorage.getItem(opneID), 1)
+                })()
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        // 定义 map 地图盒子 | geolocation 定位插件 | positionPicker 拖拽选址 | RepairmanPstition 修理工坐标获取 | marker 渲染修理工图标
+        let map, geolocation, positionPicker, RepairmanPstition = [],
+            marker;
+        /**
+         ** map 地图盒子
+         **/
+        map = new AMap.Map('container', {
+            resizeEnable: true,
+            zoom: 15,
+            scrollWheel: false
+        });
+
+        /**
+         ** positionPicker 拖拽选址
+         **/
+        AMapUI.loadUI(['misc/PositionPicker'], function(PositionPicker) {
+
+            positionPicker = new PositionPicker({
+                mode: 'dragMarker',
+                map: map,
+                iconStyle: { //自定义外观
+                    url: './images/zijidingwei.png',
+                    ancher: [24, 40],
+                    size: [20, 40]
+                }
+            });
+
+            positionPicker.on('success', function(positionResult) {
+                // console.log('success', positionResult)
+                console.log('------我的位置获取成功-----')
+                    // document.getElementById("locat").innerHTML = positionResult.address
+                localStorage.setItem("YAK_YourPosition", JSON.stringify({
+                    address: positionResult.address,
+                    position: positionResult.position,
+                    provinceId: positionResult.regeocode.addressComponent.adcode.slice(0, 2),
+                    cityId: positionResult.regeocode.addressComponent.adcode.slice(0, 4),
+                    areaId: positionResult.regeocode.addressComponent.adcode
+                }));
+                getRepairmanPstition(positionResult.position)
+            });
+
+            positionPicker.on('fail', function(fail) {
+                console.log('fail', fail)
+            });
+            let a = map.addControl(new AMap.ToolBar({
+                liteStyle: true,
+                offset: new AMap.Pixel(8, 200),
+                locate: true,
+                position: 'LB', //更多配置见 http://lbs.amap.com/api/javascript-api/reference/map-control#AMap.ToolBar
+            }))
+        });
+
+        /**
+         ** geolocation 定位插件
+         **/
+        map.plugin('AMap.Geolocation', function() {
+            geolocation = new AMap.Geolocation({
+                enableHighAccuracy: true, //是否使用高精度定位，默认:true
+                timeout: 10000, //超过10秒后停止定位，默认：无穷大
+                buttonOffset: new AMap.Pixel(12, 320), //定位按钮与设置的停靠位置的偏移量，默认：Pixel(10, 20)
+                zoomToAccuracy: true, //定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                buttonPosition: 'RB'
+            });
+            // map.addControl(geolocation); //定位点 转交为 AMap.ToolBar 控制
+            geolocation.getCurrentPosition();
+            AMap.event.addListener(geolocation, 'complete', (complete) => {
+                positionPicker.start(complete.position);
+            }); //返回定位信息
+            AMap.event.addListener(geolocation, 'error', (onError) => {
+                console.log(JSON.stringify(onError))
+            }); //返回定位出错信息
+
+        });
+
+        /**
+         ** RepairmanPstition 修理工坐标获取
+         **/
+        function getRepairmanPstition(latlngXY) {
+            // console.log(`--------------${Date.now()}-----------RepairmanPstition 修理工坐标获取 ${JSON.stringify(latlngXY)}--------------`)
+            $.post(`${ApiMainPath}`, {
+                action: 'userModel/getWorkerAndMaintenanceLocation',
+                formData: `x=${latlngXY.lat}&y=${latlngXY.lng}&serviceType=${localStorage.getItem("YAK_RepairmanType")}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'POST'
+            }, (data, status) => {
+                console.log(`------师傅坐标获取成功-- ${data.data.worker.length} 条数据---`);
+                if (data.code == '200') {
+                    let Workers = data.data.worker
+                    let MaintenanceLocations = data.data.maintenanceLocation
+                    let w, m
+                    for (let i = 0; i < Workers.length; i++) {
+                        w = {}
+                            // w.icon = Workers[i].header;
+                        w.icon = './images/shifudadian.png';
+                        w.position = [Workers[i].y, Workers[i].x];
+                        w.userid = Workers[i].userId;
+                        w.star = Workers[i].star;
+                        RepairmanPstition[i] = w
+                    }
+
+                    for (let i = 0; i < MaintenanceLocations.length; i++) {
+                        m = {}
+                        m.icon = './images/weixiudian.png';
+                        m.position = [Workers[i].y, Workers[i].x];
+                        m.userid = Workers[i].userId;
+                        m.star = Workers[i].star;
+                        RepairmanPstition[i] = m
+                    }
+                    localStorage.setItem('YAK_RepairmanPstition', JSON.stringify(RepairmanPstition))
+                    w = null, m = null
+
+                    readyMarker()
+                }
+
+            });
+        }
+
+
+
+        /**
+         ** marker 渲染修理工图标
+         **/
+        function readyMarker() {
+            // console.log(`--------------${Date.now()}-----------marker 渲染修理工图标-------------------`)
+            for (let i = 0, marker; i < Object.keys(RepairmanPstition).length; i++) {
+                marker = new AMap.Marker({
+                    position: RepairmanPstition[i].position,
+                    offset: new AMap.Pixel(-10, -32), //相对于基点的位置
+                    icon: new AMap.Icon({ //复杂图标
+                        // size: new AMap.Size(100, 100), //图标大小
+                        imageSize: new AMap.Size(22, 40), //图标大小
+                        // image: RepairmanPstition[i].icon + '?imageView2/1/w/40/h/40/format/png/q/75|imageslim', //大图地址
+                        image: RepairmanPstition[i].icon, //大图地址
+                        // imageOffset: new AMap.Pixel(0, 0) //相对于大图的取图位置
+                    }),
+                    userid: RepairmanPstition[i].userid,
+                    star: RepairmanPstition[i].star,
+                    map: map
+                });
+
+                marker.on('click', markerClick); //启用点击图标函数
+            }
+
+
+            /**
+             ** marker 渲染修理工图标
+             **/
+            function markerClick(e) {
+
+                console.log(`-------------点击某个坐标-------------`)
+                    // console.log(e)
+                console.log('userid:', e.target.G.userid)
+                let worksList = []
+                $.post(`${ApiMainPath}`, {
+                        action: '/userModel/getWorkerInfo',
+                        formData: `userId=${e.target.G.userid}&serviceType=${localStorage.getItem("YAK_RepairmanType")}`,
+                        token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                        method: 'POST'
+                    },
+                    function(data, status) {
+                        worksList.push(data.data)
+                        console.log(`-----------${JSON.stringify(worksList)}--------`)
+                        $('#worksList').html(template('workerTpl', {
+                            worksList: worksList
+                        }))
+
+                        localStorage.setItem('YAK_WorksList', JSON.stringify(worksList))
+                    })
+
+
+            }
+
+            map.setFitView(); //可让所有点全部显示
+
+
+            // console.log(`--------------当前地图的中心位置：${map.getCenter()}-------------`)
+        }
+
+
+        /**
+         ** 切换 工人类型
+         **/
+        function changServiceType(ServiceType) {
+            localStorage.setItem("YAK_RepairmanType", ServiceType);
+            console.log(localStorage.getItem("YAK_RepairmanType"))
+            map.setFitView();
+            //执行 location
+        }
+
+        //查询订单状态
+        function userModelUnderway() {
+            console.log('查询订单状态');
+
+            $.post(`${ApiMainPath}`, {
+                    action: 'userModel/underway',
+                    formData: ``,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    Print(`我的订单状态${JSON.stringify(data)}`)
+                    template.defaults.imports.toString = function(any) {
+                        return `'${any}'`
+                    };
+                    if (data.code == 404) {
+                        $('#orderStatus').html(template('orderStatusTpl', {
+                            orderStatus: data
+                        }))
+                        document.getElementById("locat").innerHTML = JSON.parse(localStorage.getItem('YAK_YourPosition')).address
+                    } else {
+                        $('#orderStatus2').html(template('orderStatus2Tpl', {
+                            orderStatus2: data
+                        }))
+                        document.getElementById("locat")
+                        $("#locat").css('display', 'none');
+                    }
+
+                })
+
+        }
+        userModelUnderway()
+
+        let timer = window.setInterval(userModelUnderway, 3000);
+        $(window).bind('beforeunload', function() {
+            clearInterval(timer);
+            localStorage.clear();
+        });
+
+
+        function cancelOrderCom(orderID, text) {
+            mui.confirm(text, '提示', ['取消', '确认'], (e) => {
+                if (e.index == 1) {
+                    cancelOrder(orderID)
+                        // (async()=>{ await cancelOrder(orderID); })()
+                }
+            }, 'div')
+        }
+
+        //取消我的订单
+        let cancelOrder = async(orderID) => {
+            let data = new FormData();
+            data.append("action", 'order/cancelOrder');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "orderId": orderID
+            }));
+            // data.append("e", '0');
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+            if (rusultD.code == 200) {
+                alert(rusultD.message)
+                location.href = '/WEB'
+            } else {
+                alert('操作失败')
+            }
+            console.log(rusultD)
+        }
+
+        function comfirmFinishCom(orderID, text) {
+            mui.confirm(text, '提示', ['取消', '确认'], (e) => {
+                if (e.index == 1) {
+                    comfirmFinish(orderID)
+                        // (async()=>{ await comfirmFinish(orderID); })()
+                }
+            }, 'div')
+        }
+        //确认完成
+        let comfirmFinish = async(orderID) => {
+            let data = new FormData();
+            data.append("action", 'order/confirmFinish');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "orderId": orderID
+            }));
+            // data.append("e", '0');
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+            if (rusultD.code == 200) {
+                alert(rusultD.message)
+                location.href = `/WEB/用户评价.html?orderId=${orderID}`
+            } else {
+                alert('操作失败')
+            }
+            // console.log(rusultD)
+        }
+    </script>
+
+
+
+
+</body>
+
+</html>

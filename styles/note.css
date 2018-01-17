@@ -1,0 +1,5 @@
+section .note_content{width: 90%;margin: 0 auto;padding: .5rem}
+section .note_content .time{text-align: center}
+section .note_content .note_text{background-color: #fff;padding: 1rem;}
+section .note_content .note_text p{color: #333}
+section .note_content .note_text .title{font-weight: bold}

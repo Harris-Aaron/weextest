@@ -1,0 +1,51 @@
+section .user_img {
+    height: 10rem;
+    background-color: #fff;
+}
+
+section .user_img .upload_img {
+    width: 6rem;
+    height: 6rem;
+    border-radius: 3rem;
+    background-color: dodgerblue;
+    margin: 1rem auto;
+    position: relative
+}
+
+section .user_img .upload_img img {
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    right: 0;
+    top: 3.5rem;
+}
+
+section .user_img .upload_bg {
+    height: 2rem;
+    background: url(../images/beijing2.png) no-repeat;
+    background-size: cover
+}
+
+section .update {
+    margin-top: 1rem
+}
+
+section .update a {
+    display: block;
+    width: 100%;
+    padding: .8rem 1rem;
+    background-color: #fff;
+    border-bottom: 0.01rem solid #ddd;
+    position: relative
+}
+
+section .update .forward {
+    position: absolute;
+    right: 1rem
+}
+
+section .update .username {
+    color: #999;
+    position: absolute;
+    right: 2.8rem
+}

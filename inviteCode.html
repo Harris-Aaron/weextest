@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>绑定邀请码</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/register.css">
+    <style>
+        .phoneNumer {
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        form p {
+            margin: 0!important;
+            overflow-y: hidden;
+        }
+        
+        input {
+            border: 0!important;
+            outline: none!important;
+            background-color: #f3f3f3!important
+        }
+    </style>
+
+    <body>
+        <!--顶部-->
+        <header>
+            <p class="title">
+                <span class="arrow">
+                    <a href="" class="mui-icon mui-icon-back"></a>
+                </span>
+                <span>绑定邀请码</span>
+            </p>
+        </header>
+        <!--内容-->
+
+        <section style="background-color:white!important">
+            <div style="padding:20px;text-align:right">
+                <a style="padding:20px;" href="/WEB/wxUserBind.html">跳过</a>
+            </div>
+
+            <div class="phone_number" style="padding:1rem 2rem">
+                <p class="shoujihao">
+                    <img src="images2/yaoqingma.png" style="top:.75rem" />
+                    <input class="phone" type="text" id="checkPsd" placeholder="邀请码">
+                </p>
+                <button type="button" data-loading-icon-position="right" class="mui-btn mui-btn-block gdbtn" disabled>绑定邀请码</button>
+            </div>
+            <div class="bg_img">
+                <img src="images/beijing2.png" alt="">
+            </div>
+        </section>
+        <!--引入MUI JS文件-->
+        <script type="text/javascript" src="scripts/mui.min.js"></script>
+        <!--引入APP-->
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <!--引入Jquery-->
+        <script type="text/javascript" src="scripts/jquery.min.js"></script>
+        <script>
+            var getCode = document.getElementById('getVcode');
+            var account = document.getElementById('phoneNumer');
+            $('#checkPsd').change(function() {
+                if ($(this).val()) {
+                    $('.gdbtn').removeAttr('disabled')
+                } else {
+                    $('.gdbtn').attr('disabled', true)
+                }
+            })
+            $('.gdbtn').click(function() {
+                if (!$('#checkPsd').val()) {
+                    mui.toast('请输入邀请码');
+                    return false;
+                } else {
+                    var _this = $(this);
+                    mui(_this).button('loading');
+                    //绑定邀请码
+                    $.post(`${ApiMainPath}`, {
+                        action: 'user/bindRefCode',
+                        formData: `app=USER&loginName=${JSON.parse(localStorage.getItem("YAK_UserData")).loginName}&code=${$('#checkPsd').val()}`,
+                        token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                        method: 'post'
+                    }, function(data, status) {
+                        if (data.code == 200) {
+                            mui(_this).button('reset');
+                            var message = data.message || "绑定成功";
+                            mui.toast(message);
+                            window.location.href = "/WEB/wxUserBind.html";
+                        } else {
+                            mui(_this).button('reset');
+                            alert(data.message)
+                        }
+
+                    })
+                }
+            })
+        </script>
+    </body>
+
+</html>

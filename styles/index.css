@@ -1,0 +1,197 @@
+/*顶部*/
+
+header {
+    position: fixed;
+    background-color: #fff;
+    z-index: 999
+}
+
+#head {
+    background-color: #fff;
+    position: relative !important;
+    box-shadow: 0 0px 1px #ccc !important;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between
+}
+
+
+/*导航*/
+
+nav .nav_menu li {
+    width: 50%;
+    padding: 0.8rem 2rem;
+    text-align: center;
+    border-bottom: 0rem solid #fff;
+    transition: border-bottom .5s
+}
+
+.current {
+    color: #64d394;
+    border-bottom: 0.1rem solid #64d394!important;
+}
+
+
+/*底部固定搜索框*/
+
+footer {
+    position: fixed;
+    width: 90%;
+    height: 6rem;
+    left: 50%;
+    margin-left: -45%;
+    margin-top: -7rem;
+    background-color: #fff;
+    z-index: 600
+}
+
+footer .flex_search p {
+    padding: 0.5rem 0 0;
+    font-size: 1rem;
+}
+
+footer .flex_search .address {
+    border-bottom: 0.01rem solid #ccc;
+    overflow: hidden;
+    display: flex;
+    justify-content: flex-start
+}
+
+footer .flex_search .address .location {
+    margin: 0 0.8rem;
+}
+
+footer .flex_search .address .locat {
+    padding: 0;
+    border: 0;
+    margin: 0;
+    height: 1.5rem
+}
+
+footer .flex_search .order {
+    text-align: center
+}
+
+footer .flex_search .order a {
+    color: #7ebf41
+}
+
+#warp {
+    position: absolute;
+    z-index: -10;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    transition: background-color .5s;
+}
+
+.warpShow {
+    z-index: 999 !important;
+    background-color: #cccccc30 !important;
+}
+
+
+/*侧栏菜单*/
+
+#slider_menu {
+    text-align: center;
+    position: absolute;
+    left: -70%;
+    z-index: 999;
+    width: 70%;
+    height: 100%;
+    background-color: #fff;
+    transition: all .5s;
+}
+
+.slider_menuShow {
+    left: 0 !important;
+}
+
+#slider_menu ul {
+    display: block;
+}
+
+
+/*用户头像*/
+
+#slider_menu .userImg {
+    padding-top: 2rem;
+}
+
+#slider_menu .userImg .userImg_a {
+    width: 6rem;
+    height: 6rem;
+    margin: 0 auto 1.5rem;
+    border-radius: 3rem;
+}
+
+#slider_menu .userImg .userImg_a img {
+    width: 100%;
+    height: 100%;
+}
+
+
+/*用户管理*/
+
+#slider_menu .manage {
+    margin-top: 2rem;
+}
+
+#slider_menu .manage li {
+    margin-bottom: 2rem;
+}
+
+#slider_menu .manage span:last-child {
+    color: #000;
+}
+
+#slider_menu .manage .manageImg {
+    margin-right: 1rem;
+}
+
+#slider_menu .manage .manageImg img {
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+
+/*三大服务*/
+
+#slider_menu .three_service {
+    display: flex;
+    justify-content: center;
+    align-content: space-around;
+    margin-top: 3rem;
+}
+
+#slider_menu .three_service p {
+    color: #666;
+}
+
+#slider_menu .three_service li {
+    padding: 0 0.8rem;
+}
+
+#slider_menu .three_service img {
+    width: 3rem;
+    height: 3rem;
+}
+
+
+/*招募*/
+
+#slider_menu .zhaomu a {
+    text-decoration: underline;
+    color: #4bcc83;
+}
+
+.headerTitle {
+    font-size: 1.2rem;
+    font-weight: 100;
+}
+
+.headerIcon {
+    max-width: 1.4rem;
+    margin-top: 10px;
+}

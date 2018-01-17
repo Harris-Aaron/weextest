@@ -1,0 +1,7 @@
+section{border-bottom: 0.01rem solid #ccc}
+section .content li{padding: 1rem .8rem;}
+section .content .img_icon{width: 10%;}
+section .content .text{width: 90%;position: relative}
+section .content .text .text_title{font-size: 1.2rem;font-weight: bold;color: #333}
+section .content .text .time{position: absolute;right: 1rem}
+section .content .text p{font-size: 1rem}

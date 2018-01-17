@@ -1,0 +1,57 @@
+<html class="gr__dcloud_io">
+
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+
+</head>
+
+<body data-gr-c-s-loaded="true" class="mui-ios mui-ios-10 mui-ios-10-3">
+
+
+
+    <h1> 废除 </h1>
+
+
+    <header class="mui-bar mui-bar-nav">
+        <a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+        <h1 id="title" class="mui-title">订单</h1>
+    </header>
+    <div class="mui-content"></div>
+
+    <script src="./scripts/mui.min.js"></script>
+    <script type="text/javascript">
+        //启用双击监听
+        mui.init({
+            gestureConfig: {
+                doubletap: true
+            },
+            subpages: [{
+                url: 'orderList.html',
+                id: 'orderList.html',
+                styles: {
+                    top: '45px',
+                    bottom: '0px',
+                }
+            }]
+        });
+
+        var contentWebview = null;
+        document.querySelector('header').addEventListener('doubletap', function() {
+            if (contentWebview == null) {
+                contentWebview = plus.webview.currentWebview().children()[0];
+            }
+            contentWebview.evalJS("mui('#pullrefresh').pullRefresh().scrollTo(0,0,100)");
+        });
+    </script>
+
+
+    <div class="mui-iframe-wrapper" style="top: 45px; bottom: 0px;"><iframe src="" id="orderList.html" name="orderList.html"></iframe></div>
+</body>
+
+</html>

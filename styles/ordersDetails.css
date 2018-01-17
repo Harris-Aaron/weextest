@@ -1,0 +1,96 @@
+.ordersDetails_title {
+    width: 100%;
+    height: 6rem;
+    background: url(../images/baojiadanbeijing.png) no-repeat;
+    background-size: cover;
+    padding: 2rem 1rem 1rem
+}
+
+.ordersDetails_title p {
+    margin-bottom: 0.5rem;
+    color: #fff;
+    position: relative
+}
+
+
+/*订单号*/
+
+.ordersDetails_title .orders_number {
+    font-size: 13px
+}
+
+
+/*联系客服*/
+
+.ordersDetails_title .contact {
+    display: inline-block;
+    position: absolute;
+    right: 1rem;
+    border: 0.05rem solid #fff;
+    border-radius: 0.2rem;
+    padding: 0 0.8rem
+}
+
+
+/*订单详情*/
+
+.ordersDetails_content {
+    background-color: #fff;
+    margin-top: .8rem
+}
+
+.ordersDetails_content p {
+    padding: 1rem .8rem;
+    border-bottom: 0.01rem solid #ddd;
+    display: flex
+}
+
+.ordersDetails_content p span {
+    display: inline-flex
+}
+
+.ordersDetails_content .content_title {
+    color: #4bcc83;
+    padding: .2rem .8rem
+}
+
+.ordersDetails_content p .category {
+    margin-right: 1rem;
+    width: 20%
+}
+
+.ordersDetails_content p .category_text {
+    color: #222;
+    width: 80%
+}
+
+.cancel {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.clickBut {
+    width: 6em;
+    float: right;
+    margin: auto;
+    margin-top: 2em;
+    border: 1px solid #000;
+    border-radius: 3px;
+    padding: 0.3em;
+    margin-right: 0.5em;
+    font-size: 13px;
+}
+
+.orderDelailPic {
+    background-size: cover;
+    width: 7em;
+    height: 7em;
+}
+
+.preViewPic {
+    min-width: 100%;
+    background-color: #000;
+    z-index: 9999;
+    position: absolute;
+    top: 1px;
+}

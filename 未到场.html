@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>未到场</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/ordersDetails.css">
+    <style>
+        .mui-checkbox input[type=checkbox]:checked:before,
+        .mui-radio input[type=radio]:checked:before {
+            color: #3bc598;
+        }
+        
+        .ordersDetails_content {
+            margin-top: unset;
+        }
+        
+        body {
+            line-height: unset;
+        }
+        
+        .pretty16 {
+            font-size: 18px;
+            font-weight: 400;
+            color: #292929;
+        }
+        
+        .mui-table-view {
+            margin-top: 0.1rem;
+            position: unset;
+            color: #525050;
+        }
+        
+        ul {
+            font-size: 18px;
+        }
+        
+        section {
+            background-color: unset;
+        }
+        
+        .okk {
+            width: 90%;
+            margin: 1em auto;
+            background-color: #ccc;
+            padding: .8rem;
+            color: #000;
+            border-radius: .4rem;
+        }
+        
+        .okked {
+            background: linear-gradient(to right, #4bcc84, #39c49b);
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <!--内容-->
+    <section>
+
+
+
+        <!--订单详情-->
+        <div class="ordersDetails_content">
+
+            <p class="pretty16">
+                师傅已到达系统指定范围，您需要选择师傅未到场原因
+            </p>
+
+            <div id="Labels"></div>
+            <script type="text/html" id="LabelsTpl">
+
+
+                <% for(var i = 0; i < Labels.length; i++){ %>
+                    <ul class="mui-table-view">
+                        <li class="mui-table-view-cell mui-radio mui-left">
+                            <input name="radio" type="radio" value="<%= Labels[i].value %>">
+                            <%= Labels[i].label %>
+                        </li>
+                    </ul>
+                    <% } %>
+
+            </script>
+
+
+
+        </div>
+
+        <br>
+        <a style="color:#fff" id="aLink">
+            <div class="cancel okk">
+                确认
+            </div>
+        </a>
+    </section>
+
+
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <script>
+        function NotComing() {
+            $.post(`${ApiMainPath}`, {
+                    action: 'system/queryLabels',
+                    formData: `type=absent_label`,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    Print(`未到场原因${JSON.stringify(data)}`)
+                    if (data.code == 200) {
+                        $('#Labels').html(template('LabelsTpl', {
+                            Labels: data.data.items
+                        }))
+                        $(':radio').change(function() {
+                            $('.okk').addClass('okked');
+                            $('#aLink').attr('onclick', 'postNOComing1()')
+                        })
+
+                    } else {
+                        alert(data.message)
+                    }
+
+                })
+
+        }
+        NotComing()
+
+
+        function postNOComing1() {
+            mui.confirm('提交未到场将取消该订单，您是否继续提交？', '提示', ['取消', '确认'], (e) => {
+                if (e.index == 1) {
+                    postNOComing2()
+                }
+            }, 'div')
+        }
+
+        function postNOComing2() {
+            console.log('取消订单')
+            $.post(`${ApiMainPath}`, {
+                    action: 'order/notto',
+                    formData: "orderId=" + getUrlParam('orderId') + `&reason=${$('input[type="radio"]:checked').val()}`,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    Print(`未到场原因${JSON.stringify(data)}`)
+                    if (data.code == 200) {
+                        location.href = '/WEB/'
+                    } else {
+                        alert(data.message)
+                    }
+
+                })
+        }
+    </script>
+</body>
+
+</html>

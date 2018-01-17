@@ -1,0 +1,8 @@
+section .logo{padding: 2rem 0}
+section .logo img{width: 30%;height: 30%}
+section .setting_content{background-color: #fff}
+section .setting_content a{display: block;padding: 1rem .5rem;border-bottom: .01rem solid #ddd;position: relative}
+section .setting_content a .forward{position: absolute;right: 1rem}
+section{position: relative}
+section .footer{width: 90%;position: absolute;bottom:5rem}
+section .footer .phone_number{color: #222;font-size: 1.1rem;margin-bottom: .5rem}

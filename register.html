@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>手机注册</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/register.css">
+    <style>
+        .phoneNumer {
+            text-align: center;
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 10px;
+        }
+        
+        form p {
+            margin: 0!important;
+            overflow-y: hidden;
+        }
+        
+        input {
+            border: 0!important;
+            outline: none!important;
+            background-color: #f3f3f3!important
+        }
+    </style>
+
+    <body>
+        <!--顶部-->
+        <header>
+            <p class="title">
+                <span class="arrow">
+            <a href="" class="mui-icon mui-icon-back"></a>
+        </span>
+                <span>手机注册</span>
+            </p>
+        </header>
+        <!--内容-->
+        <section style="background-color:white!important">
+            <div class="phone_number">
+                <div class="phoneNumer">
+                    验证的你的手机号
+                    <!-- <div id="phoneNumer">18180924082</div> -->
+                    <br>
+                    <br>
+                    <br>
+                </div>
+                <p class="yanzhengma">
+                    <img src="images/yanzhengma.png" />
+                    <input id="phoneNumer" class="vCode" type="text" placeholder="手机号码">
+                </p>
+                <p class="yanzhengma">
+                    <img src="images/yanzhengma.png" />
+                    <input class="vCode" id="smscode" type="text" placeholder="短信验证码">
+                    <button type="button" class="getVcode" id='getVcode'>发送验证码</button>
+                </p>
+                <p class="shoujihao">
+                    <img src="images/mima.png" />
+                    <input class="phone" type="password" id="checkPsd" placeholder="请输入数字和英文组合的6-12位数密码">
+                </p>
+                <p class="shoujihao">
+                    <img src="images/mima.png" />
+                    <input class="phone" type="password" id="rcheckPsd" placeholder="请确认密码">
+                </p>
+                <button type="button" data-loading-icon-position="right" class="mui-btn mui-btn-block gdbtn">注册</button>
+            </div>
+            <div class="bg_img">
+                <img src="images/beijing2.png" alt="">
+            </div>
+        </section>
+        <!--引入MUI JS文件-->
+        <script type="text/javascript" src="scripts/mui.min.js"></script>
+        <!--引入APP-->
+        <script type="text/javascript" src="scripts/app.js"></script>
+        <!--引入Jquery-->
+        <script type="text/javascript" src="scripts/jquery.min.js"></script>
+        <script>
+            var getCode = document.getElementById('getVcode');
+            var account = $('#phoneNumer').val()
+            var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/; //手机号正则;
+            var reg_pass = /^(?![0-9]+$)(?![a-zA-Z]+$)[0-9A-Za-z]{6,12}$/; //密码正则
+            //获取验证码
+            getCode.onclick = function() {
+                // if (!account || !reg_phone.test(account)) {
+                if ((/^[1][0-9]{10}$/.test(account))) {
+                    mui.toast('请输入正确的手机号')
+                } else {
+                    getCode.setAttribute('disabled', true);
+                    var time = 60,
+                        djs = null;
+                    getCode.innerHTML = '倒计时' + time + 's';
+                    djs = setInterval(function() {
+                        if (time > 0) {
+                            time--;
+                            getCode.innerHTML = '倒计时' + time + 's';
+                        } else {
+                            getCode.innerHTML = '获取验证码';
+                            getCode.removeAttribute('disabled');
+                            time = 60;
+                            clearInterval(djs)
+                            djs = null;
+                        }
+                    }, 1000)
+
+                    //发送验证码 ${JSON.parse(localStorage.getItem("YAK_UserData")).loginname}
+                    $.post(`${ApiMainPath}`, {
+                        action: 'user/getCode',
+                        formData: `type=User&loginname=${$('#phoneNumer').val()}&smsType=register`,
+                        // token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                        method: 'post'
+                    }, function(data, status) {
+                        // console.log(data)
+                        if (data.code == 200) {
+                            alert('验证码' + JSON.stringify(data));
+                            mui.toast('验证码已发送');
+                        } else {
+                            clearInterval(djs)
+                            djs = null;
+                            getCode.innerHTML = '获取验证码';
+                            getCode.removeAttribute('disabled');
+                            alert(data.message)
+                        }
+
+                    })
+                }
+
+            }
+            $('.gdbtn').click(function() {
+                if (!$('.vCode').val()) {
+                    mui.toast('请输入验证码');
+                    return false;
+                } else if (!reg_pass.test($('#checkPsd').val())) {
+                    mui.toast('请输入正确格式的密码');
+                    return false;
+                } else if ($('#rcheckPsd').val() != $('#checkPsd').val()) {
+                    mui.toast('确认密码错误');
+                    return false;
+                } else {
+                    // alert(1)
+                    let form1 = `loginname=${$('#phoneNumer').val()}&password=${BASE32($('#checkPsd').val())}&code=${$('#smscode').val()}&type=User`;
+                    // alert(form1)
+                    // var _this = $(this);
+                    // mui(_this).button('loading');
+                    //注册
+
+                    // (async(orderID) => {
+                    //     let data = new FormData();
+                    //     data.append("action", 'user/regist');
+                    //     data.append("method", 'POST');
+                    //     data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+                    //     data.append("jsonData", JSON.stringify({
+                    //         "loginname": $('#phoneNumer').val(),
+                    //         "password": $('#checkPsd').val(),
+                    //         "code": $('#smscode').val(),
+                    //         "type": "User"
+                    //     }));
+                    //     data.append("e", '3');
+
+                    //     let body = await fetch(`${ApiMainPath}`, {
+                    //         method: "POST",
+                    //         body: data
+                    //     })
+                    //     let rusultD = await body.json()
+                    //     if (rusultD.code == 200) {
+                    //         mui(_this).button('reset');
+                    //         mui.toast(rusultD.message);
+                    //         window.location.href = "/WEB/inviteCode.html";
+                    //     } else {
+                    //         mui(_this).button('reset');
+                    //         alert(rusultD.message)
+                    //     }
+                    // })()
+
+
+                    $.post(`${ApiMainPath}`, {
+                        action: 'user/regist',
+                        formData: form1,
+                        // token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                        method: 'post',
+                        e: 3
+                    }, function(data, status) {
+                        alert(JSON.stringify(data))
+                        if (data.code == 200) {
+                            mui(_this).button('reset');
+                            mui.toast(data.message);
+                            window.location.href = `/WEB/inviteCode.html?openID=${getUrlParam(openID)}`;
+                        } else {
+                            mui(_this).button('reset');
+                            alert(data.message)
+                        }
+
+                    })
+                }
+            })
+        </script>
+    </body>
+
+</html>

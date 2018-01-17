@@ -1,0 +1,6 @@
+.income_content{padding: 1.2rem 1rem;background-color: #fff;border-bottom: 0.01rem solid #ddd}
+.income_content p{margin-bottom: 0.2rem;position: relative}
+.income_content .content_title{color: #222}
+.price{font-weight: bold;position: absolute;right: 0}
+.add{color: #ed4848}
+.reduce{color: #4bcc83}

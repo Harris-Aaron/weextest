@@ -1,0 +1,113 @@
+html,
+body {
+    width: 100%;
+    height: 100%;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    background-color: #fff;
+    position: relative
+}
+
+html,
+body {
+    height: 100%
+}
+
+a {
+    text-decoration: none;
+    color: #333
+}
+
+ul {
+    list-style: none;
+    display: flex
+}
+
+header {
+    width: 100%;
+    border-bottom: 0.01rem solid #ddd;
+    display: none;
+}
+
+header .title {
+    text-align: center;
+    margin: 0.8rem 0.5rem;
+    font-size: 1rem;
+    color: #333;
+    font-weight: bold;
+    position: relative;
+}
+
+header .title .arrow {
+    position: absolute;
+    left: 0;
+}
+
+header .title .save {
+    position: absolute;
+    right: 1rem;
+    font-size: .9rem;
+    font-weight: normal
+}
+
+section {
+    background-color: #f4f4f4;
+    height: 100%
+}
+
+section p {
+    margin-bottom: 0
+}
+
+section .waring {
+    padding: .5rem 1rem
+}
+
+
+/*没有更多*/
+
+.nomore {
+    margin-top: 1rem;
+    text-align: center
+}
+
+.color_black {
+    color: #222
+}
+
+.border_bottom {
+    border-bottom: 0.01rem solid #ddd
+}
+
+.align_center {
+    text-align: center
+}
+
+.mui-popup-button.mui-popup-button-bold {
+    color: #4bcc84;
+    font-weight: 400;
+}
+
+.mui-popup-button {
+    color: #ccc;
+}
+
+.title22 {
+    font-size: 22px;
+    font-weight: 200;
+}
+
+.title18 {
+    font-size: 18px;
+    font-weight: 200;
+}
+
+.title16 {
+    font-size: 16px;
+    font-weight: 200;
+}

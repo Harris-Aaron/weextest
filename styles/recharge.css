@@ -1,0 +1,21 @@
+/*测试*/
+.recharge_test{background-color: #fff;padding-bottom: 1rem}
+.test_title{padding: 0.5rem 1rem;border-bottom: 0.01rem solid #ddd;color: #222}
+.test_describe{padding: 1rem;}
+.recharge_test .test_box{display: flex;padding: 0 1rem;width: 100%;text-align: center;}
+.recharge_test .test_box p{color: #fff}
+.recharge_test .test_box div{background: #ccc;padding: 1rem;border-radius: 0.2rem;}
+.recharge_test .test_box .current{color: #fff;background: linear-gradient(to right, #4bcc84 , #39c49b)}
+.recharge_test .test_box .box_left{width: 50%;margin-right: 1rem}
+.recharge_test .test_box .box_right{width: 50%}
+/*普通充值*/
+.recharge_common{background-color: #fff;margin: 1rem 0}
+.recharge_common .recharge_input{width: 90%;margin: 0 auto;}
+.recharge_common .recharge_input input{background-color: #f2f2f2;border: none;color: #bbb}
+/*支付方式*/
+.recharge_pay .pay_text{padding: 0.5rem 1rem}
+.recharge_pay .pay_wechat{width: 100%;background-color: #fff;color: #222;border: 0.01rem solid #dddddd;padding: 1rem 1.5rem}
+/*用户协议及下一步*/
+.recharge_next{width: 90%;margin: 2rem auto;text-align: center}
+.recharge_next a{color: #64d394}
+.recharge_next .btn{margin-top: .5rem;padding: .5rem;background: linear-gradient(to right, #4bcc84 , #39c49b);color: #fff;border-radius: 0.2rem}

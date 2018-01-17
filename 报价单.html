@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>报价单</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/ordersDetails.css">
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <style>
+        .ppp {
+            padding: 0 !important;
+            border: 0 !important;
+            color: #404040 !important;
+            padding-bottom: 0.5em !important;
+        }
+        
+        .mui-table-view-cell {
+            padding: 11px 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <!--内容-->
+    <section style="height: 105%;">
+        <!--订单状态-->
+
+        <div id="getOrderInfo"></div>
+        <script type="text/html" id="getOrderInfoTpl">
+
+            <div class="ordersDetails_title">
+                <p class="pretty">维修服务</p>
+                <p class="pretty18">
+                    <span>订单号: <%= getOrderInfo.workExtend.orderId %> </span> </span>
+                </p>
+            </div>
+
+            <div style="padding :0.5rem 1rem; background-color: #fff;">
+                <p class="pretty18" style="color: rgb(55, 55, 55);">
+                    <%= getOrderInfo.serverType %>
+                </p>
+                <p class="orders_number" style="margin-top: 0.4em;">
+                    <span><%= getOrderInfo.address %></span>
+                </p>
+            </div>
+
+        </script>
+
+        <!--订单详情-->
+        <div class="ordersDetails_content">
+            <p class="content_title">
+                <span class="pretty16" class="category" style="margin: 0.5rem;">费用清单</span>
+            </p>
+
+
+            <div id="getPrice"></div>
+            <script type="text/html" id="getPriceTpl">
+                <% for(var i = 0; i < getPrice.items.length; i++){ %>
+                    <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                        <li class="mui-table-view-cell">
+                            <div class="mui-table">
+
+                                <p class="ppp">
+                                    <%= getPrice.items[i].accessoriesName %>
+                                </p>
+                                <!-- <p class="ppp">第二行显示示例</p> -->
+                                <p style="float:right; border:0;padding:0.5em; padding-top: 0 !important;">
+                                    <span>数量: <%= getPrice.items[i].nums %> </span>&nbsp;&nbsp;&nbsp;
+                                    <span style="color:black; font-size:18px;">￥<%= getPrice.items[i].sellPrice %></span>
+                                </p>
+                            </div>
+                        </li>
+                    </ul>
+                    <% } %>
+
+
+
+                        <ul class="mui-table-view mui-table-view-striped mui-table-view-condensed">
+                            <li class="mui-table-view-cell">
+                                <div class="mui-table">
+                                    <p style="float:right; border:0;padding:0.5em; padding-top: 0.2em !important;">
+                                        <span>小计：</span>
+                                        <span style="color:#ff4545; font-size:20px;">￥ <%= getPrice.totalPrice %></span>
+                                    </p>
+                                </div>
+                            </li>
+                        </ul>
+            </script>
+        </div>
+
+        <div id="status4Show"></div>
+        <script type="text/html" id="status4ShowTpl">
+            <% if (status4Show == 3 ) { %>
+                <a style="color:#fff" href="#ipnutPayPWD">
+                    <div class="cancel" style="width: 80%;
+        margin: 1em auto;
+        background: linear-gradient(to right, #4bcc84, #39c49b);
+        padding: .8rem;
+        color: #fff;
+        border-radius: .4rem;">
+                        确认报价
+                    </div>
+                </a>
+                <!--订单已取消-->
+                <div class="cancel" style="padding-bottom: 0.8em;">
+                    <p onclick="cancelOrderCom()">取消订单</p>
+                </div>
+                <% } %>
+        </script>
+
+    </section>
+
+    <style>
+    .pretty {
+            font-size: 20px;
+            font-weight: 100;
+        }
+        
+        .pretty18 {
+            font-size: 18px;
+            font-weight: 100;
+        }
+        
+        .pretty16 {
+            font-size: 16px;
+            font-weight: 100;
+        }
+        
+        .ProverBox {
+            width: 80%;
+            background: #fff;
+            margin: auto;
+            border-radius: 5px;
+        }
+        
+        .ProverBoxHeader {
+            width: 100%;
+            height: 3em;
+            border-bottom: 1px solid #39c49b;
+        }
+        
+        .ProverBoxHeaderText {
+            text-align: center;
+            font-size: 20px;
+            color: #000;
+            padding-top: 0.7em;
+        }
+        
+        .ProverBoxHeaderCancel {
+            height: 1em;
+            float: right;
+            margin: -1.6em 1em 0 0;
+        }
+        
+        .ProverBoxBodyinput {
+            display: inline-block;
+            margin: 0 0 1em 1.45em;
+        }
+        
+        .ProverBoxBodyinput input {
+            width: 45px;
+            height: 45px;
+            outline: none;
+            font-size: 35px;
+            border-radius: unset;
+            margin-left: -6px;
+        }
+    }
+    </style>
+
+    <div id="ipnutPayPWD" class="box mui-popover mui-popover-action" style="margin: 35% auto;">
+        <div class="ProverBox">
+            <div class="ProverBoxHeader">
+                <p class="ProverBoxHeaderText">请输入密码</p>
+                <img onclick="PopoverToggle()" class="ProverBoxHeaderCancel" src="./images/guanbizhifu.png">
+            </div>
+
+            <p class="ProverBoxHeaderText" style="padding-top:0.7em;font-size:18px">结算</p>
+
+            <p class="ProverBoxHeaderText" style="padding-top:0.4em;font-size:35px">￥<span id="totalPrice"></span> </span>
+            </p>
+
+            <p class="ProverBoxHeaderText" style="padding-top:0.2em;font-size:15px; color:rgb(126, 125, 125)">结算后将由师傅进行维修</p>
+            <div class="ProverBoxBodyinput">
+                <input type="password" autofocus maxlength="1">
+                <input type="password" maxlength="1">
+                <input type="password" maxlength="1">
+                <input type="password" maxlength="1">
+                <input type="password" maxlength="1">
+                <input type="password" maxlength="1">
+            </div>
+        </div>
+
+
+    </div>
+
+
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <script>
+        let orderpreice
+
+        function getPrice() {
+            $.post(`${ApiMainPath}`, {
+                    action: 'order/getPrice',
+                    formData: `orderId=${getUrlParam('orderId')}`,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    // Print(`未到场原因${JSON.stringify(data)}`)
+                    if (data.code == 200) {
+                        $('#getPrice').html(template('getPriceTpl', {
+                            getPrice: data.data
+                        }))
+
+                        $('#totalPrice').text(data.data.totalPrice)
+
+                    } else {
+                        alert(data.message)
+                    }
+
+                })
+
+            $.post(`${ApiMainPath}`, {
+                action: 'order/getOrderInfo',
+                formData: `orderId=${getUrlParam('orderId')}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'POST'
+            }, function(data, status) {
+                orderpreice = data
+                console.log(data)
+                $('#getOrderInfo').html(template('getOrderInfoTpl', {
+                    getOrderInfo: data.data
+                }))
+                $('#status4Show').html(template('status4ShowTpl', {
+                    status4Show: data.data.status
+                }))
+
+
+            })
+
+        }
+        getPrice()
+
+
+
+
+
+        function cancelOrderCom() {
+            mui.confirm('提交未到场将取消该订单，您是否继续提交？', '提示', ['取消', '确认'], (e) => {
+                if (e.index == 1) {
+                    cancelOrder()
+                }
+            }, 'div')
+        }
+
+
+        let cancelOrder = async() => {
+            let data = new FormData();
+            data.append("action", 'order/cancelOrder');
+            data.append("method", 'POST');
+            data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+            data.append("jsonData", JSON.stringify({
+                "orderId": getUrlParam('orderId')
+            }));
+
+            let body = await fetch(`${ApiMainPath}`, {
+                method: "POST",
+                body: data
+            })
+            let rusultD = await body.json()
+            if (rusultD.code == 200) {
+                alert(rusultD.message)
+                location.href = '/WEB'
+            } else {
+                alert('操作失败')
+            }
+            // console.log(rusultD)
+        }
+
+
+
+        let PopoverToggle = () => {
+                mui('#ipnutPayPWD').popover('toggle');
+            }
+            /**
+             * 模拟支付宝的密码输入形式
+             */
+            (function(window, document) {
+                let active = 0,
+                    inputBtn = document.querySelectorAll('input');
+                for (let i = 0; i < inputBtn.length; i++) {
+                    inputBtn[i].addEventListener('click', function() {
+                        inputBtn[active].focus();
+                    }, false);
+                    inputBtn[i].addEventListener('focus', function() {
+                        this.addEventListener('keyup', listenKeyUp, false);
+                    }, false);
+                    inputBtn[i].addEventListener('blur', function() {
+                        this.removeEventListener('keyup', listenKeyUp, false);
+                    }, false);
+                }
+
+
+                /**
+                 * 监听键盘的敲击事件
+                 */
+                function listenKeyUp() {
+                    // if (!isNaN(this.value) && this.value.length != 0) {
+                    if (this.value && this.value.length != 0) {
+                        if (active < 5) {
+                            active += 1;
+                        } else {
+                            let pwd = ''
+                            $("input[type=password]").each(function() {
+                                pwd += $(this).val();
+                            });
+
+                            (async() => {
+                                let data = new FormData();
+                                data.append("action", 'pay/validatePayPwd');
+                                data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+                                data.append("method", 'POST');
+                                data.append("jsonData", JSON.stringify({
+                                    "payPwd": pwd
+                                }));
+                                data.append("e", '2');
+
+                                let body = await fetch(`${ApiMainPath}`, {
+                                    method: "POST",
+                                    body: data
+                                })
+                                let rusultD = await body.json()
+                                console.log(rusultD);
+
+                                if (rusultD.data.result == 0) {
+                                    $("input[type=password]").css('color', '#4bcc84')
+
+                                    let data = new FormData();
+                                    data.append("action", 'order/confirmPrice');
+                                    data.append("token", JSON.parse(localStorage.getItem("YAK_UserData")).token);
+                                    data.append("method", 'POST');
+                                    data.append("jsonData", JSON.stringify({
+                                        "orderId": getUrlParam('orderId'),
+                                        "payToken": rusultD.data.payToken
+                                    }));
+                                    data.append("e", '2');
+
+                                    let body = await fetch(`${ApiMainPath}`, {
+                                        method: "POST",
+                                        body: data
+                                    })
+                                    let rusultC = await body.json()
+                                    console.log(rusultC)
+                                    if (rusultC.code == 200) {
+                                        alert(rusultC.message)
+                                        history.back()
+                                    } else {
+                                        alert(rusultC.message)
+                                    }
+                                } else {
+                                    $("input[type=password]").css('color', 'red')
+                                }
+
+
+
+
+
+
+                            })()
+                        }
+                        inputBtn[active].focus();
+                    } else if (this.value.length == 0) {
+                        if (active > 0) {
+                            active -= 1;
+                        }
+                        inputBtn[active].focus();
+                    }
+                }
+            })(window, document);
+    </script>
+</body>
+
+</html>

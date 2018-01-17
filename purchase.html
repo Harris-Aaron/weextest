@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>我要下单</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI选取时间样式-->
+    <link rel="stylesheet" href="styles/mui.picker.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/purchase.css">
+</head>
+
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="index.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>我要下单</span>
+        </p>
+    </header>
+    <!--内容-->
+    <section>
+
+        <div class="list">
+
+
+
+            <p class="color_black border_bottom">详情填写</p>
+            <ul>
+                <div id="worksData"></div>
+                <script type="text/html" id='worksDataTpl'>
+
+
+                    <!--产品类型-->
+                    <li class="list_title">
+                        <span class="circle">●</span>
+                        <span class="color_black">产品类型</span>
+                    </li>
+                    <li class="border_bottom">
+                        <select id="serverTypeId" onchange="regetSendOrderInfo(this.value)">
+                    <option value="请选择您的产品类型">请选择您的产品类型</option>
+                    <% for(var j = 0; j < worksData.serviceTypeList.length; j++){ %> 
+                        <option value="<%= worksData.serviceTypeList[j].serviceTypeId %>"> <%= worksData.serviceTypeList[j].serviceTypeName %></option>
+                    <% } %>
+    
+                </select>
+                    </li>
+                    <!--品牌-->
+                    <li class="list_title">
+                        <span class="circle">●</span>
+                        <span class="color_black">品牌</span>
+                    </li>
+                    <li class="border_bottom">
+                        <select id="brandId">
+                    <option value="请选择您的产品类型">请选择您的产品品牌</option>
+                    <% for(var j = 0; j < worksData.brandList.length; j++){ %> 
+                        <option value="<%= worksData.brandList[j].brandId %>"> <%= worksData.brandList[j].brandName %></option>
+                    <% } %>
+                </select>
+                </script>
+
+                <div id="systemType"></div>
+                <script type="text/html" id='systemTypeTpl'>
+                    <% if (systemTypeList.length > 0) { %>
+                        <!--系统类型-->
+                        <li class="list_title">
+                            <span class="circle">●</span>
+                            <span class="color_black">系统类型</span>
+                        </li>
+
+                        <li class="border_bottom">
+                            <select id="categoryId">
+                        <option value="请选择您的产品类型">请选择您的产品系统类型</option>
+                       
+                        <% for(var j = 0; j < systemTypeList.length; j++){ %> 
+                            <option value="<%= systemTypeList[j].systemTypeId %>"> <%= systemTypeList[j].systemTypeName %></option>
+                        <% } %>
+                       
+                    </select>
+                        </li>
+                        <% } %>
+                </script>
+
+                <!--维修地址-->
+                <li class="list_title">
+                    <span class="circle">●</span>
+                    <span class="color_black">维修地址</span>
+                </li>
+                <li class="border_bottom">
+                    <p id="localAddress">...</p>
+                </li>
+
+                <!--小区-楼号-门牌号-->
+                <li class="list_title">
+                    <span class="circle">●</span>
+                    <span class="color_black">小区-楼号-门牌号</span>
+                </li>
+                <li class="border_bottom">
+                    <input id="community" type="text" placeholder="例如：***小区**栋**号" />
+                </li>
+
+                <!--预约时间-->
+                <li class="list_title">
+                    <span class="circle">●</span>
+                    <span class="color_black">预约时间</span>
+                </li>
+                <li class="border_bottom">
+                    <input type="datetime-local" name="" id="datetime">
+                    <!-- <select data-options='{}' class="btn mui-btn mui-btn-block" style="font-size:14px">
+                    <option value="" id='result' class="ui-alert">请选择师傅上门维修时间</option>
+                    </select> -->
+                </li>
+
+                <!--详情描述-->
+                <li class="list_title">
+                    <span class="circle">●</span>
+                    <span class="color_black">详情描述</span>
+                </li>
+                <li class="border_bottom align_center">
+                    <textarea id="description" placeholder="请填写具体故障说明"></textarea>
+                </li>
+
+                <!--上传图片-->
+                <li class="list_title">
+                    <span class="circle">●</span>
+                    <span class="color_black">上传图片</span>
+                </li>
+                <li class="border_bottom" style="padding-bottom: 1rem" id="FileAreas">
+                    <label for="files">
+                       <input type="file" id="files" accept="image/*" multiple name="images">
+                       <img class="upload_img" src="./images/shangchuanzhaopian.png" style="vertical-align: unset !important;"/>
+                    </label>
+                </li>
+
+            </ul>
+        </div>
+        <br>
+        <div id="worksList"></div>
+        <script type="text/html" id='workerTpl'>
+            <% for(var i = 0; i < worksList.length; i++){ %>
+                <ul class="mui-table-view mui-table-view-chevron">
+                    <li class="mui-table-view-cell mui-media" style="width:100%;padding-right:0.8em;  ">
+                        <img class="mui-media-object mui-pull-left" style="max-width: 65px; height:65px ;border-radius: 50%;" src="<%= worksList[i].header %>">
+                        <div class="mui-media-body" style="margin-top:0.2em">
+                            <%= worksList[i].realName %>&nbsp; <img src="images/pingxing.png" style="width: 1em;margin-bottom: 5px;"> <span style="color:#63d394;font-weight: 300;"> <%= worksList[i].star %> </span>
+
+                                <p style="margin-top:1em;font-size:15px;">
+                                    您已选择该师傅进行下单
+                                </p>
+                        </div>
+                    </li>
+                </ul>
+                <% } %>
+        </script>
+
+        <div class="purchase_text">
+            <p>1、维修售后师傅安排检测完毕后上门检测费会自动扣除</p>
+            <p>2、系统将尽快安排维修售后师傅上门服务</p>
+            <p>3、请确保家里有人</p>
+        </div>
+        <div class="purchase_btn align_center">
+            <p onclick="pushOrder()">下单</p>
+        </div>
+        <br>
+    </section>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入选取时间JS文件-->
+    <script type="text/javascript" src="scripts/mui.picker.min.js"></script>
+    <script>
+        let UserData = JSON.parse(localStorage.getItem("YAK_UserData"))
+            //判断是否显示师傅信息和抓取师傅技能
+        let formData = `app=USER&serviceType=${localStorage.getItem("YAK_RepairmanType")}`;
+        if (getUrlParam('workerID')) {
+            formData = `app=USER&serviceType=${localStorage.getItem("YAK_RepairmanType")}&userId=${getUrlParam('workerID')}`;
+            $('#worksList').html(template('workerTpl', {
+                worksList: JSON.parse(localStorage.getItem('YAK_WorksList'))
+            }))
+        } else {
+            console.log('没有选择师傅下单')
+        }
+        $.post(`${ApiMainPath}`, {
+                action: '/userModel/getSendOrderInfo',
+                formData: formData,
+                token: UserData.token,
+                method: 'POST'
+            },
+            function(data, status) {
+                // Print(`该师傅技能---${JSON.stringify(data)}`)
+                $('#worksData').html(template('worksDataTpl', {
+                    worksData: data.data
+                }))
+            })
+
+        let regetSendOrderInfo = (serviceTypeId) => {
+            if (serviceTypeId) {
+                reformData = `${formData}&serviceTypeId=${serviceTypeId}`
+                $.post(`${ApiMainPath}`, {
+                        action: '/userModel/getSendOrderInfo',
+                        formData: reformData,
+                        token: UserData.token,
+                        method: 'POST'
+                    },
+                    function(data, status) {
+                        let systemTypeList = data.data.systemTypeList
+                            // console.log(`-----------${JSON.stringify(systemTypeList)}--------`)
+                        $('#systemType').html(template('systemTypeTpl', {
+                            systemTypeList: systemTypeList
+                        }))
+                    })
+                reformData = formData
+            } else {
+                Print('没有选择产品类型')
+            }
+        }
+
+        // 注入当前位置
+        let ThePosition = JSON.parse(localStorage.getItem('YAK_YourPosition'))
+        document.getElementById("localAddress").innerHTML = ThePosition.address
+
+
+        // 获取时间插件的时间毫秒数
+        // let TheMilliseconds;
+        // (function($) {
+        //     $.init();
+        //     var result = $('#result')[0];
+        //     var btns = $('.btn');
+        //     btns.each(function(i, btn) {
+        //         btn.addEventListener('tap', function() {
+        //             var optionsJson = this.getAttribute('data-options') || '{}';
+        //             var options = JSON.parse(optionsJson);
+        //             var id = this.getAttribute('id');
+        //             var picker = new $.DtPicker(options);
+        //             picker.show(function(rs) {
+        //                 TheMilliseconds = new Date(rs.text).getTime()
+        //                 localStorage.setItem("TheMilliseconds", new Date(rs.text).getTime());
+        //                 result.innerText = rs.text;
+        //                 picker.dispose();
+        //             });
+        //         }, false);
+        //     });
+        // })(mui);
+
+        //图片文件显示
+        function fileShow(file, index) {
+            let FR = new FileReader();
+            FR.readAsDataURL(file);
+            FR.onload = function(e) {
+                $("#FileAreas").append(`<img class="upload_img" src="${this.result}" style="vertical-align: unset !important;" > `);
+            };
+        }
+
+
+        //图片文件选择
+        let Imgs
+        document.querySelector("#files").onchange = () => {
+            let files = document.querySelector("#files").files;
+
+            if (files.length > 3) {
+                alert('最多只能选择3张图片')
+            } else {
+                updateHeader(files)
+                for (let i = 0; i < Object.keys(files).length; i++) {
+                    fileShow(files[i], i)
+                }
+            }
+
+        };
+        //多图图片和表单输入上传
+        function updateHeader(files) {
+            let fileForm = new FormData();
+            $.each(files, function(key, value) {
+                fileForm.append(key, value);
+            });
+
+            let ajaxData = {
+                token: UserData.token,
+                picType: 'order',
+                memberID: UserData.memberId
+            }
+            $.each(ajaxData, function(key, value) {
+                fileForm.append(key, value);
+            });
+
+            $.ajax({
+                url: `${ApiQiniuPath}`,
+                type: 'POST',
+                data: fileForm,
+                cache: false,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                success: function(data) {
+                    console.log(`-----------七牛--${JSON.stringify(data)}----------`)
+                    Imgs = data.data
+                }
+            })
+
+        }
+
+
+        //发布新订单
+        function pushOrder() {
+
+            let sendOrderData = {
+                workerId: getUrlParam('workerID'),
+                y: ThePosition.position.lng,
+                x: ThePosition.position.lat,
+                localtionDesc: ThePosition.address,
+                milliseconds: new Date($('#datetime').val()).getTime(),
+                // milliseconds: JSON.parse(localStorage.getItem('TheMilliseconds')),
+
+                serverTypeId: $('#serverTypeId').val(),
+                brandId: $('#brandId').val(),
+                categoryId: $('#categoryId').val(),
+                description: $('#description').val(),
+
+                img: Imgs,
+
+                provinceId: ThePosition.provinceId,
+                cityId: ThePosition.cityId,
+                areaId: ThePosition.areaId,
+                extend: $('#community').val(),
+                app: 'USER',
+                os: 'Android',
+                token: UserData.token
+            }
+
+            // alert(JSON.stringify(sendOrderData))
+            //json2url
+            const sendOrderData2url = Object.keys(sendOrderData).map(function(key) {
+                return (key) + '=' + (sendOrderData[key]);
+                // return encodeURIComponent(key) + '=' + encodeURIComponent(sendOrderData[key]);
+            }).join('&');
+
+
+
+            // const orderData = `workerId=uadc98e8bd971&y=104.046643&x=30.581672&localtionDesc=四川省成都市武侯区石羊场街道剑南大道北段中海国际中心J座&milliseconds=1515057060000&serverTypeId=22&brandId=6&description=不同放入大闹天宫没人说你太烦人事&provinceId=510000&cityId=510100&areaId=510107&extend=报告发现那是个放在上面&app=USER&os=Android&categoryId=a0472c3fc9aa44c8ac21b45f68230d6f`;
+            const orderData = sendOrderData2url;
+
+            $.post(`${ApiMainPath}`, {
+                    action: 'order/sendOrder',
+                    formData: orderData,
+                    token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                    method: 'POST'
+                },
+                function(data, status) {
+                    if (data.code == 200) {
+                        location.href = '/WEB'
+                    } else if (data.code == 505) {
+                        alert(data.message)
+                    } else if (data.code == 501) {
+                        alert(data.message)
+                        location.href = '/WEB/recharge.html'
+                    } else {
+                        alert('下单失败，请再次点击下单按钮')
+                    }
+                    console.log(`-----------${JSON.stringify(data)}--------`)
+                })
+
+
+        }
+    </script>
+</body>
+
+</html>

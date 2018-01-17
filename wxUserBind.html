@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>绑定手机号码</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/updatePayPassword.css">
+</head>
+<style>
+    .purchase_btn p {
+        width: 80%;
+        margin: 0 auto;
+        background: linear-gradient(to right, #4bcc84, #39c49b);
+        padding: .5rem;
+        color: #fff;
+        border-radius: .4rem
+    }
+</style>
+
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="userInfo.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>微信绑定手机号</span>
+        </p>
+    </header>
+    <!--内容-->
+    <section>
+
+        <p class="phoneNumber" style="font-size:12px; width:80%; margin:0 3em;"><br>绑定手机号码，实现免密登录，需要验证您的手机号并正确填写短信验证码</p>
+
+        <p class="getCode" style="margin-bottom: 0.1em;">
+            <span>手机号</span>
+            <input type="text" id="phone" placeholder="请输入您的手机号码" required autofocus pattern="[0-9]{7,12}">
+        </p>
+        <p class="getCode">
+            <span>验证码</span>
+            <input type="text" class="vCode" id="SMSCode" readonly="readonly" placeholder="请发送验证码">
+            <button class="validate" id='btnAddProfile' required type='button'>发送验证码</button>
+        </p>
+
+        <br>
+
+        <div class="purchase_btn align_center">
+            <p id="gdbtn">绑定</p>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+
+        <center><a href="/WEB/register.html"> 注册 </a></center>
+
+
+
+    </section>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+
+    <script>
+        let openID = getUrlParam('openID');
+        var getCode = document.getElementById('btnAddProfile');
+        // var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/; //手机号正则;
+        var reg_phone = /^1[34578]\d{9}$/; //手机号正则;
+        var reg_pass = /^\d{6}$/; //密码正则
+        //获取验证码
+        getCode.onclick = function() {
+            if (!$('#phone').val() || !reg_phone.test($('#phone').val())) {
+                // if ((/^[1][0-9]{10}$/.test(account))) {
+                mui.toast('请输入正确的手机号')
+            } else {
+                getCode.setAttribute('disabled', true);
+                var time = 60,
+                    djs = null;
+                getCode.innerHTML = '倒计时' + time + 's';
+                djs = setInterval(function() {
+                    if (time > 0) {
+                        time--;
+                        getCode.innerHTML = '倒计时' + time + 's';
+                    } else {
+                        getCode.innerHTML = '获取验证码';
+                        getCode.removeAttribute('disabled');
+                        time = 60;
+                        clearInterval(djs)
+                        djs = null;
+                    }
+                }, 1000)
+
+                //发送验证码 ${JSON.parse(localStorage.getItem("YAK_UserData")).loginname}
+                let formData = `type=User&loginname=${$('#phone').val()}&smsType=register`;
+                alert(formData);
+
+                $.post(`${ApiMainPath}`, {
+                    action: 'user/getCode',
+                    formData: formData,
+                    method: 'post'
+                }, function(data, status) {
+                    console.log(data)
+                    if (data.code == 200) {
+                        // alert('验证码' + JSON.stringify(data));
+                        mui.toast('验证码已发送');
+                        $('.vCode').removeAttr("readonly");
+                        $('.vCode').attr({
+                            placeholder: "输入验证码"
+                        });
+                    } else {
+                        clearInterval(djs)
+                        djs = null;
+                        getCode.innerHTML = '获取验证码';
+                        getCode.removeAttribute('disabled');
+                        mui.toast(data.message);
+                    }
+
+                })
+            }
+
+        }
+
+        $('#gdbtn').click(function() {
+
+            if (!$('#phone').val()) {
+                mui.toast('请输入正确的手机号码');
+                return false;
+            } else if (!$('.vCode').val()) {
+                mui.toast('请输入验证码');
+                return false;
+            } else if (!reg_pass.test($('.vCode').val())) {
+                mui.toast('请输入正确格式的密码');
+                return false;
+            } else if ($('.vCode').val() != $('.vCode').val()) {
+                mui.toast('确认密码错误');
+                return false;
+            } else {
+                let FromDta = `openID=${getUrlParam('openID')}&code=${$("#SMSCode").val()}&phoneNumber=${$('#phone').val()}`
+                alert(FromDta)
+                $.post(`${ApiMainPath}`, {
+                        action: 'user/wxUserBind',
+                        formData: FromDta,
+                        method: 'POST'
+                    },
+                    function(data, status) {
+                        console.log(JSON.stringify(data))
+                        if (data.code == "200") {
+                            localStorage.clear()
+                            localStorage.setItem('YAK_UserData', JSON.stringify(data.data));
+                            Print(' 重置登录时间戳 ')
+                            localStorage.setItem('YAK_loginTimeStamp', JSON.stringify(Date.now()))
+                            localStorage.setItem('openID', openID)
+                            mui.toast(data.message);
+                            location.href = `/WEB/index.html?openID=${openID}`
+                        } else if (data.code == "3001") {
+                            localStorage.clear()
+                            localStorage.setItem('YAK_UserData', JSON.stringify(data.data));
+                            Print(' 重置登录时间戳 ')
+                            localStorage.setItem('YAK_loginTimeStamp', JSON.stringify(Date.now()))
+                            localStorage.setItem('openID', openID)
+                            mui.toast(data.message);
+                            location.href = `/WEB/index.html?openID=${openID}`
+                        } else {
+                            alert(data.message)
+                            location.href = `/WEB/register.html?openID=${openID}`
+                        }
+                    })
+
+
+
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

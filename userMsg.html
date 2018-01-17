@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>消息</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/userMsg.css">
+</head>
+<style>
+   section{
+        background: white;
+    }
+    section img{width: 50px;height: 50px;margin-right: 10px}
+    section a{
+        padding: 10px;
+        border-bottom: 1px solid #eeeeee;
+        display: flex;
+        align-items: center;
+        margin: 10px;
+        
+    }
+    .flar{
+        display: flex;
+        justify-content: space-between
+    }
+    .text{
+        flex: 1;
+    }
+    .flar .text_title{
+        font-size: 18px;
+        color: black;
+    }
+</style>
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="index.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>消息</span>
+        </p>
+    </header>
+    <!--内容-->
+    <section id='msgData'></section>
+    <script type="text/html" id='msgDataTpl'>
+        <%for(var i = 0 ; i <list.length;i++){%>
+            <a href="note.html?type=<%=list[i].type%>">
+                 
+                    <img src="<%=list[i].icon%>" > 
+                    <div class="text">
+                        <p class="flar"><span class="text_title"><%=list[i].title%></span><span class="time"><%=list[i].createTime%></span></p>
+                        <p><%=list[i].desc%></p>
+                    </div>
+                </ul>
+            </a>
+           
+        <%}%>
+         
+    </script>
+    </script>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <script>
+        $.post(`${ApiMainPath}`, {
+            action: 'system/lastOperateInfos',
+            formData: `app=USER`,
+            token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+            method: 'post'
+        }, function (data, status) {
+            console.log(JSON.parse(localStorage.getItem("YAK_UserData")).token)
+            if (data.code == 200) {
+                console.log('消息',data);
+                if(data.data.items && data.data.items.length){
+                    for(var i = 0 ;i< data.data.items.length;i++){
+                        var dt = new Date(data.data.items[i].createTime).getTime();
+                        data.data.items[i].createTime = getDateDiff(dt);
+                    }
+                    $('#msgData').html(template('msgDataTpl', {
+                        list: data.data.items
+                    }))
+                }else{
+                    $('#msgData').html('<div style="text-align:center;padding:15px">暂无消息</div>')
+                }
+                
+            } else {
+                alert(data.message)
+            }
+
+        })
+        //发布时间判断
+        var minute = 1000 * 60;
+        var hour = minute * 60;
+        var day = hour * 24;
+        var halfamonth = day * 15;
+        var month = day * 30;
+        function getDateDiff(dateTimeStamp) {
+            var now = new Date().getTime();
+            var diffValue = now - dateTimeStamp;
+            var monthC = diffValue / month;
+            var weekC = diffValue / (7 * day);
+            var dayC = diffValue / day;
+            var hourC = diffValue / hour;
+            var minC = diffValue / minute;
+            if (monthC >= 1) {
+                result = parseInt(monthC) + "月前";
+            }
+            else if (weekC >= 1) {
+                result = parseInt(weekC) + "周前";
+            }
+            else if (dayC >= 1) {
+                result = parseInt(dayC) + "天前";
+            }
+            else if (hourC >= 1) {
+                result = parseInt(hourC) + "小时前";
+            }
+            else if (minC >= 1) {
+                result = parseInt(minC) + "分钟前";
+            } else {
+                result = "刚刚";
+            }
+            return result;
+        }
+    </script>
+ 
+
+
+
+</body>
+
+</html>

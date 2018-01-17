@@ -1,0 +1,8 @@
+.orders_content{padding-top: 1rem}
+.orders_content a{display: block;width: 100%;border-top: 0.01rem solid #ddd;background-color: #fff}
+.orders_content a p{border-bottom: 0.01rem solid #ddd;padding: 1rem 0.8rem;position: relative}
+.orders_content .fixed_icon{color:#2ac845;font-weight: bold;font-size: 1.2rem}
+/*订单状态*/
+.orders_content .state{position: absolute;right: 1rem}
+/*用户选择类型*/
+.orders_content .fixed_name{margin-right: 2.5rem}

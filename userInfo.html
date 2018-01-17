@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>个人信息</title>
+    <!--视口设置-->
+    <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+    <!--引入重置样式-->
+    <link rel="stylesheet" href="styles/reset.min.css">
+    <!--引入MUI CSS样式-->
+    <link rel="stylesheet" href="styles/mui.ui.css">
+    <!--引入公共样式-->
+    <link rel="stylesheet" href="styles/common.css">
+    <!--引入自定义样式-->
+    <link rel="stylesheet" href="styles/userInfo.css">
+</head>
+
+<body>
+    <!--顶部-->
+    <header>
+        <p class="title">
+            <span class="arrow">
+            <a href="index.html" class="mui-icon mui-icon-back"></a>
+        </span>
+            <span>个人信息</span>
+        </p>
+    </header>
+    <!--内容-->
+
+
+
+    <section>
+
+        <div id="UserInfo"></div>
+        <script type="text/html" id='UserInfoTpl'>
+
+            <div class="user_img">
+                <p class="upload_img" style="background-image: url('<%= UserInfo.headPortrait %>');background-size: cover;">
+                    <input accept="image/*" id="filePic" type="file" style="opacity: 0;padding: 2em;">
+                    <img src="images/genghuantouxiang.png" alt="">
+                </p>
+                <p class="upload_bg"></p>
+            </div>
+            <div class="update">
+                <a href="updateName.html" style="margin-bottom: 0.3em;
+                border-bottom-color: #fff;">
+                    <span>昵称</span>
+                    <span class="username"> <%= UserInfo.nickname %> </span>
+                    <span class="mui-icon mui-icon-arrowright forward" style="line-height: inherit;"></span>
+                </a>
+                <a href="updateUserPassword.html">
+                    <span>修改账号密码</span>
+                    <span class="mui-icon mui-icon-arrowright forward"></span>
+                </a>
+                <a href="updatePayPassword.html" style="border-bottom-color:#fff">
+                    <span>修改支付密码</span>
+                    <span class="mui-icon mui-icon-arrowright forward"></span>
+                </a>
+            </div>
+        </script>
+
+
+
+
+    </section>
+    <!--引入MUI JS文件-->
+    <script type="text/javascript" src="scripts/mui.min.js"></script>
+    <!--引入APP-->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <!--引入Jquery-->
+    <script type="text/javascript" src="scripts/jquery.min.js"></script>
+    <!-- artTemlate -->
+    <script src="scripts/template-web.js"></script>
+    <script>
+        // {"token":"7277ec1fe77fb7ca3940","memberId":"2462341","headPortrait":"./images/logo.png","nickname":"张三","bindCard":0,"setPayword":0}
+        let UserData = JSON.parse(localStorage.getItem('YAK_UserData'))
+        if (UserData.memberId) {
+            $('#UserInfo').html(template('UserInfoTpl', {
+                UserInfo: UserData
+            }))
+        } else {
+            alert('获取个人信息失败！')
+        }
+
+
+
+        function fileShow(file, index) {
+            let FR = new FileReader();
+            FR.readAsDataURL(file);
+            FR.onload = function(e) {
+                if (this.result.size > 1024) {
+                    alert('图片太大了！')
+                }
+                document.querySelector('.upload_img').style.backgroundImage = `url(${this.result})`;
+            };
+        }
+
+        document.querySelector("#filePic").onchange = () => {
+            let files = document.querySelector("#filePic").files;
+            let imgNode = ''
+            for (let i = 0; i < Object.keys(files).length; i++) {
+                console.log(files[i], i)
+                fileShow(files[i], i)
+            }
+            updateHeader(files)
+        };
+
+        function updateHeader(files) {
+            let fileForm = new FormData();
+            $.each(files, function(key, value) {
+                fileForm.append(key, value);
+            });
+
+            let ajaxData = {
+                localFiles: files,
+                token: `0Aq4QeBtytoH7eV1YVT9jphlY6qJ0EG9K-AgZe5V:VeSFq3rrjKzF69ffYIRJshTPJLk=:eyJzY29wZSI6ImVhc3ljYXJlLXVzZXIiLCJkZWFkbGluZSI6MTUxNTAzODM4Mn0=`,
+                prefix: files.name
+            }
+
+            $.each(ajaxData, function(key, value) {
+                fileForm.append(key, value);
+            });
+
+            $.ajax({
+                url: `${ApiQiniuPath}`,
+                type: 'POST',
+                data: fileForm,
+                cache: false,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                contentType: false, // Set content type to false as jQuery will tell the server its a query string request
+                success: function(data) {
+                    console.log(`---------${JSON.stringify(data)}--------------`)
+                    if (data.errno == 0) {
+                        $.post(`${ApiMainPath}`, {
+                            action: 'user/updateHeader',
+                            formData: `imgUrl=${ data.data }`,
+                            token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                            method: 'POST'
+                        }, (data, status) => {
+                            console.log(JSON.stringify(data))
+                            if (data.code == 200) {
+
+                                (async() => {
+                                    let loginData = await openIdToLogin('', 1)
+                                    console.log(loginData)
+                                    if (loginData.code == 200) {
+                                        history.back()
+                                    } else {
+                                        alert('修改失败，请重新保存~')
+                                    }
+                                })()
+
+                            } else {
+                                alert('修改失败，请重新保存~')
+                            }
+                            console.log("数据：" + JSON.stringify(data) + "\n状态：" + JSON.stringify(status));
+                        });
+                    } else {
+                        alert('上传文件失败~')
+                    }
+
+                }
+            })
+        }
+    </script>
+</body>
+
+
+</html>

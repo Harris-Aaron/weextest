@@ -1,0 +1,25 @@
+{
+    "deploy": {
+        "targets": [
+            // {
+            //     "type": "ftp",
+            //     "name": "My FTP folder",
+            //     "description": "A FTP folder",
+
+            //     "dir": "/html/WEB",
+            //     "host": "120.27.237.213", "port": 21,
+            //     "secure": false,
+            //     "user": "webftp", "password": "YZGHhj89tp7ZPgpC"
+            // }
+            {
+                "type": "sftp",
+                "name": "My SFTP folder",
+                "description": "A SFTP folder",
+
+                "dir": "/home/www/weixin/html/WEB/",
+                "host": "120.27.237.213", "port": 22,
+                "user": "root", "password": "P4AaK1emZgDCqodk"
+            }
+        ]
+    }
+}
