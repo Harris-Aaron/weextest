@@ -63,7 +63,7 @@
         <br>
         <br>
 
-        <center><a href="/WEB/register.html"> 注册 </a></center>
+        <center><a onclick="goreg()"> 注册 </a></center>
 
 
 
@@ -78,6 +78,9 @@
     <script src="scripts/template-web.js"></script>
 
     <script>
+        let goreg = () => {
+            location.href = `/WEB/register.html?openID=${openID}`;
+        }
         let openID = getUrlParam('openID');
         var getCode = document.getElementById('btnAddProfile');
         // var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/; //手机号正则;
@@ -179,7 +182,8 @@
                         } else {
                             // alert(data.message)
                             mui.toast(data.message);
-                            // location.href = `/WEB/register.html?openID=${openID}`
+                            localStorage.setItem('openID', openID)
+                            location.href = `/WEB/register.html?openID=${openID}`
                         }
                     })
 

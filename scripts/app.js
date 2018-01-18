@@ -3,11 +3,8 @@ let Print = (text) => {
         // alert(`------------${text}-----------`)
 }
 
-Print((location.href).indexOf('http://m.yiank.cn/WEB/index.html'))
-if ((location.href).indexOf('http://m.yiank.cn/WEB/index.html') == 0) {
-    // localStorage.clear()
-    Print('清除缓存')
-}
+// Print((location.href).indexOf('http://m.yiank.cn/WEB/index.html'))
+
 
 // const findIP = async() => {
 //     return new Promise(r => {
@@ -141,11 +138,18 @@ let openIdToLogin = async(openID, isrefresh) => {
     }
 }
 
-function unlockwallet() {
-    Print('关闭了吗？')
+
+if ((location.href).indexOf('http://m.yiank.cn/WEB/index.html') == 0) {
+    // localStorage.clear()
+    (async() => { await openIdToLogin(localStorage.getItem('opneID'), 0) })()
+    Print('清除缓存')
 }
 
-window.addEventListener('visibilitychange', unlockwallet);
+// function unlockwallet() {
+//     Print('关闭了吗？')
+// }
+
+// window.addEventListener('visibilitychange', unlockwallet);
 
 
 let BASE32 = function(s) {

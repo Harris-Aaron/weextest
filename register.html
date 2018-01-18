@@ -71,7 +71,7 @@
                     <img src="images/mima.png" />
                     <input class="phone" type="password" id="rcheckPsd" placeholder="请确认密码">
                 </p>
-                <button type="button" data-loading-icon-position="right" class="mui-btn mui-btn-block gdbtn">注册</button>
+                <button type="button" data-loading-icon-position="right" id="signinBtn" class="mui-btn mui-btn-block gdbtn">注册</button>
             </div>
             <div class="bg_img">
                 <img src="images/beijing2.png" alt="">
@@ -134,8 +134,10 @@
                 }
 
             }
-            $('.gdbtn').click(function() {
-                localStorage.setItem('openID', getUrlParam(openID))
+            $('#signinBtn').click(function() {
+                if (getUrlParam('openID')) {
+                    localStorage.setItem('openID', getUrlParam('openID'))
+                }
                 if (!$('.vCode').val()) {
                     mui.toast('请输入验证码');
                     return false;
@@ -152,11 +154,11 @@
                         formData: form1,
                         method: 'post',
                         e: 3
-                    }, function(data, status) {
+                    }, function(data) {
                         if (data.code == 200) {
                             mui(_this).button('reset');
                             mui.toast(data.message);
-                            window.location.href = `/WEB/inviteCode.html?openID=${getUrlParam(openID)}`;
+                            window.location.href = `/WEB/inviteCode.html?openID=${getUrlParam('openID')}`;
                         } else {
                             mui(_this).button('reset');
                             alert(data.message)

@@ -48,7 +48,7 @@
 
         <section style="background-color:white!important">
             <div style="padding:20px;text-align:right">
-                <a style="padding:20px;" href="/WEB/wxUserBind.html">跳过</a>
+                <a style="padding:20px;" onclick="linktowxbind()">跳过</a>
             </div>
 
             <div class="phone_number" style="padding:1rem 2rem">
@@ -69,6 +69,9 @@
         <!--引入Jquery-->
         <script type="text/javascript" src="scripts/jquery.min.js"></script>
         <script>
+            function linktowxbind() {
+                location.href = `/WEB/wxUserBind.html?openID=${getUrlParam('openID')}`;
+            }
             var getCode = document.getElementById('getVcode');
             var account = document.getElementById('phoneNumer');
             $('#checkPsd').change(function() {
@@ -96,7 +99,7 @@
                             mui(_this).button('reset');
                             var message = data.message || "绑定成功";
                             mui.toast(message);
-                            window.location.href = "/WEB/wxUserBind.html";
+                            window.location.href = `/WEB/wxUserBind.html?openID=${getUrlParam('openID')}`;
                         } else {
                             mui(_this).button('reset');
                             alert(data.message)
