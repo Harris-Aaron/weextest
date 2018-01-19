@@ -560,6 +560,10 @@
                             orderStatus: data
                         }))
                         document.getElementById("locat").innerHTML = JSON.parse(localStorage.getItem('YAK_YourPosition')).address
+                    } else if (data.code == 400) {
+                        localStorage.clear()
+                        location.reload()
+                            // await openIdToLogin(localStorage.getItem(opneID), 1)
                     } else {
                         $('#orderStatus2').html(template('orderStatus2Tpl', {
                             orderStatus2: data

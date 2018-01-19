@@ -32,9 +32,32 @@
             outline: none!important;
             background-color: #f3f3f3!important
         }
-        .aboutPay{padding: 15px 15px 5px 15px;overflow:hidden;}
-        .topImg{text-align: center;padding: 50px}
-        .topImg img{width: 80%;margin: auto;}
+        
+        .aboutPay {
+            padding: 15px 15px 5px 15px;
+            overflow: hidden;
+        }
+        
+        .topImg {
+            text-align: center;
+            padding: 50px
+        }
+        
+        .topImg img {
+            width: 80%;
+            margin: auto;
+        }
+        
+        .purchase_btn {
+            width: 80%;
+            margin: 0 auto;
+            background: linear-gradient(to right, #4bcc84, #39c49b);
+            padding: .5rem;
+            color: #fff;
+            border-radius: .4rem;
+            text-align: center;
+            margin: 10px auto;
+        }
     </style>
 
     <body>
@@ -50,21 +73,26 @@
         <!--内容-->
 
         <section style="background-color:white!important">
-           	<div class="topImg">
-           		<img src="images/qianbaochenggong.png" alt="">
-           		<br /><br />
-				<div>支付成功</div>
-           	</div>
+            <div class="topImg">
+                <img src="images/qianbaochenggong.png" alt="">
+                <br /><br />
+                <div>支付成功</div>
+            </div>
 
 
-			<div style="border-top: 1px solid #eee;border-bottom: 1px solid #eee: ">
-				<div class="aboutPay">
-					支付方式<span class="mui-pull-right">微信支付</span>
-				</div>
-				<div class="aboutPay">
-					实际支付<span class="mui-pull-right">400.00元</span>
-				</div>
-			</div>
+            <div style="border-top: 1px solid #eee;border-bottom: 1px solid #eee: ">
+                <div class="aboutPay">
+                    支付方式<span class="mui-pull-right">微信支付</span>
+                </div>
+                <div class="aboutPay">
+                    实际支付<span class="mui-pull-right">400.00元</span>
+                </div>
+            </div>
+            <br>
+            <br>
+            <br>
+            <div id='sendMail' onclick="backtopay()" class="purchase_btn">确认</div>
+
 
         </section>
         <!--引入MUI JS文件-->
@@ -73,7 +101,12 @@
         <script type="text/javascript" src="scripts/app.js"></script>
         <!--引入Jquery-->
         <script type="text/javascript" src="scripts/jquery.min.js"></script>
-      
+
+        <script>
+            function backtopay() {
+                location.href = '/WEB/wallet.html'
+            }
+        </script>
     </body>
 
 </html>

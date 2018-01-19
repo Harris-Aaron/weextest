@@ -53,10 +53,17 @@
 
             <div class="phone_number" style="padding:1rem 2rem">
                 <p class="shoujihao">
-                    <img src="images2/yaoqingma.png" style="top:.75rem" />
+                    <img src="images/邀请码.png" style="top:.75rem" />
                     <input class="phone" type="text" id="checkPsd" placeholder="邀请码">
+                    <br>
                 </p>
-                <button type="button" data-loading-icon-position="right" class="mui-btn mui-btn-block gdbtn" disabled>绑定邀请码</button>
+
+                <span id="aaaas" style="color:#3a3939;display: none;">你输入的邀请码不存在 </span>
+                <a href="/WEB/webInfo/inviting.html" style=" float:right; color: #91e0b9;"> 如何获取邀请码 </a>
+                <br>
+                <br>
+                <br>
+                <button type="button" id="gdbtn" data-loading-icon-position="right" class="mui-btn mui-btn-block gdbtn" disabled>绑定邀请码</button>
             </div>
             <div class="bg_img">
                 <img src="images/beijing2.png" alt="">
@@ -70,28 +77,33 @@
         <script type="text/javascript" src="scripts/jquery.min.js"></script>
         <script>
             function linktowxbind() {
-                location.href = `/WEB/wxUserBind.html?openID=${getUrlParam('openID')}`;
+                location.href = `/WEB/wxUserBind.html?openID=${getUrlParam('openID')}?phone=${getUrlParam('phone')}`;
             }
             var getCode = document.getElementById('getVcode');
             var account = document.getElementById('phoneNumer');
             $('#checkPsd').change(function() {
                 if ($(this).val()) {
-                    $('.gdbtn').removeAttr('disabled')
+                    $('#gdbtn').removeAttr('disabled')
                 } else {
-                    $('.gdbtn').attr('disabled', true)
+                    $('#gdbtn').attr('disabled', true)
                 }
             })
-            $('.gdbtn').click(function() {
+            $('#gdbtn').click(function() {
                 if (!$('#checkPsd').val()) {
                     mui.toast('请输入邀请码');
                     return false;
                 } else {
+                    // alert(getUrlParam("phone"))
+                    let loginName = getUrlParam("phone") || JSON.parse(localStorage.getItem("YAK_UserData")).loginName
+                        // alert(loginName)
+                    let from1 = `app=USER&loginName=${loginName}&code=${$('#checkPsd').val()}`;
+                    // alert(from1)
                     var _this = $(this);
                     mui(_this).button('loading');
                     //绑定邀请码
                     $.post(`${ApiMainPath}`, {
                         action: 'user/bindRefCode',
-                        formData: `app=USER&loginName=${JSON.parse(localStorage.getItem("YAK_UserData")).loginName}&code=${$('#checkPsd').val()}`,
+                        formData: from1,
                         token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
                         method: 'post'
                     }, function(data, status) {
@@ -102,7 +114,8 @@
                             window.location.href = `/WEB/wxUserBind.html?openID=${getUrlParam('openID')}`;
                         } else {
                             mui(_this).button('reset');
-                            alert(data.message)
+                            $("#aaaas").css('display', "inline-block")
+                            mui.toast(data.message);
                         }
 
                     })

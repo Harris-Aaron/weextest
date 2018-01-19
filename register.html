@@ -84,6 +84,7 @@
         <!--引入Jquery-->
         <script type="text/javascript" src="scripts/jquery.min.js"></script>
         <script>
+            $('#phoneNumer').val(getUrlParam('phone'))
             var getCode = document.getElementById('getVcode');
             var account = $('#phoneNumer').val()
             var reg_phone = /^1((3|4|5|8|7){1}\d{1}|70)\d{8}$/; //手机号正则;
@@ -91,7 +92,8 @@
             //获取验证码
             getCode.onclick = function() {
                 // if (!account || !reg_phone.test(account)) {
-                if ((/^[1][0-9]{10}$/.test(account))) {
+                // if (!(/^[1][0-9]{10}$/.test(account))) {
+                if (!(/^1\d{10}$/.test(`${$('#phoneNumer').val()}`))) {
                     mui.toast('请输入正确的手机号')
                 } else {
                     getCode.setAttribute('disabled', true);
@@ -148,6 +150,7 @@
                     mui.toast('确认密码错误');
                     return false;
                 } else {
+                    localStorage.setItem("phone", $('#phoneNumer').val())
                     let form1 = `loginname=${$('#phoneNumer').val()}&password=${BASE32($('#checkPsd').val())}&code=${$('#smscode').val()}&type=User`;
                     $.post(`${ApiMainPath}`, {
                         action: 'user/regist',
@@ -155,13 +158,16 @@
                         method: 'post',
                         e: 3
                     }, function(data) {
-                        if (data.code == 200) {
-                            mui(_this).button('reset');
+                        // alert(JSON.stringify(data))
+                        // alert(data.code)
+                        // alert(data.message)
+                        if (data.code == "200") {
+                            // mui(_this).button('reset');
                             mui.toast(data.message);
-                            window.location.href = `/WEB/inviteCode.html?openID=${getUrlParam('openID')}`;
+                            window.location.href = `/WEB/inviteCode.html?openID=${getUrlParam('openID')}$phone=${$('#phoneNumer').val()}`;
                         } else {
                             mui(_this).button('reset');
-                            alert(data.message)
+                            mui.toast(data.message);
                         }
 
                     })

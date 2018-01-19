@@ -79,7 +79,7 @@
 
     <script>
         let goreg = () => {
-            location.href = `/WEB/register.html?openID=${openID}`;
+            location.href = `/WEB/register.html?openID=${openID}&phone=${$('#phone').val()}`;
         }
         let openID = getUrlParam('openID');
         var getCode = document.getElementById('btnAddProfile');
@@ -154,6 +154,7 @@
                 mui.toast('确认密码错误');
                 return false;
             } else {
+                localStorage.setItem("phone", $('#phoneNumer').val())
                 let FromDta = `openID=${getUrlParam('openID')}&code=${$("#SMSCode").val()}&phoneNumber=${$('#phone').val()}`
                     // alert(FromDta)
                 $.post(`${ApiMainPath}`, {
@@ -183,7 +184,7 @@
                             // alert(data.message)
                             mui.toast(data.message);
                             localStorage.setItem('openID', openID)
-                            location.href = `/WEB/register.html?openID=${openID}`
+                            location.href = `/WEB/register.html?openID=${openID}&phone=${$('#phone').val()}`
                         }
                     })
 

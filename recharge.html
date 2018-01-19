@@ -209,7 +209,7 @@
                         paySign: wxPayData.paySign, // 支付签名
                         success: function(res) {
                             // alert('支付成功！' + JSON.stringify(res))
-                            location.href = `/WEB/宜安客app钱包充值成功.html?price=$("#money").val()`
+                            location.href = `/WEB/paySucess.html?price=$("#money").val()`
                                 // 支付成功后的回调函数
                         },
                         cancel: function(res) {
@@ -218,7 +218,7 @@
                         },
                         error: function(res) {
                             // alert('支付失败！' + JSON.stringify(res))
-                            location.href = '/WEB/宜安客app钱包充值失败.html'
+                            location.href = '/WEB/payFail.html'
                                 // 支付失败的回调函数
                         }
                     });

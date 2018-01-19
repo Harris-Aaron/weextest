@@ -17,7 +17,7 @@
 </head>
 
 <style>
-      .purchase_btn{
+    .purchase_btn {
         width: 80%;
         margin: 0 auto;
         background: linear-gradient(to right, #4bcc84, #39c49b);
@@ -27,7 +27,7 @@
         text-align: center;
         margin: 20px auto;
     }
-</style> 
+</style>
 
 <body>
     <!--顶部-->
@@ -69,22 +69,22 @@
             </a>
         </div>
     </section>
-    
+
     <div id="mask" class="closeMsk" style="position:fixed;top:0;left: 0;width: 100%;height: 100%;background-color: rgba(0,0,0,0.5);display: none;">
         <div class="maskContent" style="position:absolute;background-color:white;border-radius:5px;top:50%;-webkit-transform:translateY(-50%);left:15%;right:15%">
-            <div style="font-size: 16px;text-align: center;overflow: hidden;padding: 15px;border-bottom:1px solid #4bcc84; "> 
+            <div style="font-size: 16px;text-align: center;overflow: hidden;padding: 15px;border-bottom:1px solid #4bcc84; ">
                 请输入邀请码<img src="images/guanbizhifu.png" class="mui-pull-right closeMsk" style="width: 18px;vertical-align: middle;" alt="">
             </div>
             <div style="width: 90%;margin:auto;display: flex;justify-content: center;align-items: center;padding:5px 10px;margin-top:20px;border-bottom:1px solid #eee;">
                 <img src="images/androidkehu.png" style="width: 30px;vertical-align: middle;" alt="">
-                <input type="text" placeholder="填写邀请码" style="margin-bottom: 0;border: none;outline: none;">
+                <input type="text" id="exchangeCode" placeholder="填写邀请码" style="margin-bottom: 0;border: none;outline: none;">
             </div>
             <div id='sendMail' class="purchase_btn">确认</div>
-            
+
 
         </div>
 
-        
+
     </div>
 
 
@@ -121,13 +121,24 @@
             $('#mask').show()
 
         }
-        $('.maskContent').click(function(){
+        $('.maskContent').click(function() {
             event.stopPropagation();
 
         })
-        $('.closeMsk').click(function(){
+        $('.closeMsk').click(function() {
             event.stopPropagation();
             $('#mask').hide()
+        })
+
+        $('#sendMail').click(function() {
+            $.post(`${ApiMainPath}`, {
+                action: 'act/exchange',
+                formData: `exchangeCode=${$('#exchangeCode').val()}`,
+                token: JSON.parse(localStorage.getItem("YAK_UserData")).token,
+                method: 'POST'
+            }, function(data) {
+                mui.toast(data.message)
+            })
         })
     </script>
 

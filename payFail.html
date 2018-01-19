@@ -32,19 +32,32 @@
             outline: none!important;
             background-color: #f3f3f3!important
         }
-        .aboutPay{padding: 15px 15px 5px 15px;overflow:hidden;}
-        .topImg{text-align: center;padding: 50px}
-        .topImg img{width: 80%;margin: auto;}
-          .purchase_btn{
-        width: 80%;
-        margin: 0 auto;
-        background: linear-gradient(to right, #4bcc84, #39c49b);
-        padding: .5rem;
-        color: #fff;
-        border-radius: .4rem;
-        text-align: center;
-        margin: 10px auto;
-    }
+        
+        .aboutPay {
+            padding: 15px 15px 5px 15px;
+            overflow: hidden;
+        }
+        
+        .topImg {
+            text-align: center;
+            padding: 50px
+        }
+        
+        .topImg img {
+            width: 80%;
+            margin: auto;
+        }
+        
+        .purchase_btn {
+            width: 80%;
+            margin: 0 auto;
+            background: linear-gradient(to right, #4bcc84, #39c49b);
+            padding: .5rem;
+            color: #fff;
+            border-radius: .4rem;
+            text-align: center;
+            margin: 10px auto;
+        }
     </style>
 
     <body>
@@ -60,13 +73,13 @@
         <!--内容-->
 
         <section style="background-color:white!important">
-           	<div class="topImg">
-           		<img src="images/zhifushibai.png" alt="">
-           		<br /><br />
-				<div>支付失败</div>
-           	</div> 
-            <div id='sendMail' class="purchase_btn">确认</div>
-			
+            <div class="topImg">
+                <img src="images/zhifushibai.png" alt="">
+                <br /><br />
+                <div>支付失败</div>
+            </div>
+            <div id='sendMail' onclick="backtopay()" class="purchase_btn">确认</div>
+
 
         </section>
         <!--引入MUI JS文件-->
@@ -75,7 +88,13 @@
         <script type="text/javascript" src="scripts/app.js"></script>
         <!--引入Jquery-->
         <script type="text/javascript" src="scripts/jquery.min.js"></script>
-      
+
+        <script>
+            function backtopay() {
+                location.href = '/WEB/recharge.html'
+            }
+        </script>
+
     </body>
 
 </html>
